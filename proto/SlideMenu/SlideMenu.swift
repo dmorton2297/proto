@@ -34,7 +34,7 @@ class SlideMenu: UIView, UITableViewDelegate, UITableViewDataSource{
         table.frame = menu.bounds
         
         menu.updateConstraints()
-        self.alpha = 0
+        //self.alpha = 1
         self.hidden = true
         self.addSubview(menu)
     }
@@ -59,7 +59,7 @@ class SlideMenu: UIView, UITableViewDelegate, UITableViewDataSource{
         {
             self.hidden = false
             UIView.animateWithDuration(0.1){
-                self.alpha = 0.9
+                self.alpha = 1.0
             }
             open = true
         }
@@ -69,8 +69,8 @@ class SlideMenu: UIView, UITableViewDelegate, UITableViewDataSource{
         var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "nothing")
         cell.textLabel?.font = UIFont(name: "Arial", size: 20)
         cell.textLabel?.text = menus[indexPath.row]
+        cell.backgroundColor = UIColor.lightTextColor()
         cell.imageView?.image = images[indexPath.row]
-        println(indexPath.row)
         
         return cell
     }

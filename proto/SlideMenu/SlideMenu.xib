@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14D131" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SlideMenu" customModule="proto" customModuleProvider="target">
@@ -17,14 +17,15 @@
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="53" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="XpR-OQ-CF8">
                     <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="separatorColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="ITn-Bc-PIl"/>
                         <outlet property="delegate" destination="-1" id="voH-sl-5gw"/>
                     </connections>
                 </tableView>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="XpR-OQ-CF8" secondAttribute="trailing" id="49W-5i-cMB"/>
