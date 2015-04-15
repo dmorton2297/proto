@@ -7,19 +7,108 @@
 //
 
 import UIKit
+import Parse
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate
+{
 
-    override func viewDidLoad() {
+    @IBOutlet var titleLabel: UILabel!           //title label connection from storyboard
+    @IBOutlet var signUpButton: UIButton!        //sign up button connection from storyboard
+    @IBOutlet var cameraImageView: UIImageView!  //background image connectino from storyboard
+    @IBOutlet var logInButton: UIButton!         //log in button connection from storyboard
+    @IBOutlet var usernameTextField: UITextField!//Username text field connection from storyboard
+    @IBOutlet var passwordTextField: UITextField!//Password textfield from storyboard
+    
+    
+    var currentUser:PFUser! = nil
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        currentUser = PFUser.currentUser()
+        
+        //set up for blur effect on background image
+        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = self.view.frame
+        self.view.addSubview(blurView)
+        self.view.sendSubviewToBack(blurView)
+        self.view.sendSubviewToBack(cameraImageView)
+        
+        //set up for round style of "titleLabel"
+        titleLabel.clipsToBounds = true
+        titleLabel.layer.cornerRadius = 10
+        
+        //set up for round style of "signUpButton"
+        signUpButton.clipsToBounds = true
+        signUpButton.layer.cornerRadius = 10
+        
+        //set up for round style of "logInButton"
+        logInButton.clipsToBounds = true
+        logInButton.layer.cornerRadius = 10
+        
+        //setup for textfield delegation
+        usernameTextField.delegate = self
+        passwordTextField.delegate = self
+        if (currentUser != nil)
+        {
+            usernameTextField.text = currentUser.username
+            passwordTextField.text = "••••••••"
+        }
+        
+        //securing password text field
+        passwordTextField.secureTextEntry = true
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    //if there is a current user, sign in
+    override func viewDidAppear(animated: Bool)
+    {
+        if (currentUser != nil)
+        {
+            appManager.user = currentUser
+            self.performSegueWithIdentifier("login2", sender: self)
+        }
     }
-
-
+    
+    //UITextField delgation methods--------------------------------------------------
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool
+    {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    //IBAction connections from story board------------------------------------------
+    
+    //action will be triggered when "logInButton" is pressed
+    @IBAction func loginButtonPressed(sender: UIButton)
+    {
+        var checkOne:Bool = usernameTextField.text == "" || usernameTextField.text == nil
+        var checkTwo:Bool = passwordTextField.text == "" || passwordTextField.text == nil
+        
+        //if the user has not completed the textfields, break action.
+        if (checkOne || checkTwo)
+        {
+            appManager.displayAlert(self, title: "Invalid Information", message: "Please complete both text fields.", completion: nil)
+        }
+        else
+        {
+            PFUser.logInWithUsernameInBackground(usernameTextField.text, password:passwordTextField.text) {
+                (user: PFUser!, error: NSError!) -> Void in
+                if user == nil
+                {
+                    println(error.description)
+                    appManager.displayAlert(self, title: "Error", message: "Invalid Login Information", completion: nil)
+                }
+                else
+                {
+                    appManager.user = user
+                    self.performSegueWithIdentifier("login2", sender: self)
+                }
+                
+            }
+        }
+    }
+    
 }
 
