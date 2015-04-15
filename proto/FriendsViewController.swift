@@ -12,7 +12,6 @@ import Parse
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
 
-    @IBOutlet var backgroundImage: UIImageView!
     @IBOutlet var menu: SlideMenu!
     
     @IBOutlet weak var friendsTableView: UITableView!
@@ -24,14 +23,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         //menu setup----------------
         menu.superViewController = self
-        
-        //set up blur background image 
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
+
         
         self.loadTableViewData()
 

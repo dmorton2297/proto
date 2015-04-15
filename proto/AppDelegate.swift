@@ -29,6 +29,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        var navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.barTintColor = UIColor.lightGrayColor()
+
+        
         //Parse configurations
         Parse.enableLocalDatastore()
         Parse.setApplicationId("3PKEj3J4aZhGZgbuCY2GkPTBXV7DJoeLu1MZRJVd", clientKey: "FEiU0q77D0fCxOSwG06USU0ew39kDZ9YcYJxb6h2")

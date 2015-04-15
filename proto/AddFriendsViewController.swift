@@ -12,7 +12,6 @@ import Parse
 class AddFriendsViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource
 {
     
-    @IBOutlet weak var backgroundImage: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView! //connection from storyboard
     @IBOutlet weak var resultsTableView: UITableView!//connection from Storyboard
     
@@ -22,14 +21,7 @@ class AddFriendsViewController: UIViewController, UITextFieldDelegate, UITableVi
     {
         super.viewDidLoad()
         activityIndicator.hidden = true
-        
-        //background blur
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
+
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool

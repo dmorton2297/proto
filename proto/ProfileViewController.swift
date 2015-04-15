@@ -13,7 +13,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     
     @IBOutlet var slideMenu: SlideMenu! //connection from UIStoryboard
-    @IBOutlet var backgroundImage: UIImageView! //background image connectino from UIStoryBoard
     @IBOutlet var profilePicture: UIImageView! //Profile picture connection from UIStoryBoard
     var chosenProfileImage : UIImage! //This will be used when setting a new profile picture
     
@@ -30,13 +29,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         //configure the imagPicker
         imagePicker.delegate = self
         
-        //background blur
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
         
         //ProfilePicture styling-----------------
         profilePicture.clipsToBounds = true

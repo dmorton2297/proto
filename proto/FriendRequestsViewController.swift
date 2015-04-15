@@ -14,7 +14,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
     //connections from storyboard
     
     @IBOutlet weak var slideMenu: SlideMenu!//slide menu connection from storyboard
-    @IBOutlet weak var backgroundImage: UIImageView! //background image connection from storyboard
     
     @IBOutlet weak var requestsTableView: UITableView!
     
@@ -29,13 +28,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         //menu configuration
         slideMenu.superViewController = self
         
-        //background blur. This is for styling
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
         
         loadData()
     }

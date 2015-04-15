@@ -11,7 +11,6 @@ import Parse
 
 class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
-    @IBOutlet weak var backgroundImage: UIImageView!//IBConnection to background image from storyboar
     @IBOutlet weak var entryTableView: UITableView!//Connection to the main tableview in xcode
     @IBOutlet weak var profilePicture: UIImageView! //connection to the profile pictur imageview in storyboard
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!//connection to the activity indicator in storyboard
@@ -34,13 +33,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         profilePicture.clipsToBounds = true
         profilePicture.layer.cornerRadius = 30
         
-        //blurring the background image
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
+
         
         loadTableViewData()
     }

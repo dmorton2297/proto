@@ -18,7 +18,6 @@ import Parse
 
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    @IBOutlet weak var backgroundImage: UIImageView! //background image connection from storyboard.
     @IBOutlet var menu: SlideMenu! //menu connection from storyboard
     @IBOutlet var postsTableView: UITableView! //connection to tableview in view controller
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView! //connection used wen there is an external process happending
@@ -36,6 +35,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     {
         super.viewDidLoad()
         
+        var navController = self.parentViewController as! UINavigationController
+        
+        
         postsTableView.backgroundColor = UIColor(white: 1, alpha: 0.3)
         //start activity indicator
         activityIndicator.hidden = false
@@ -44,13 +46,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //UIImagePickerDelegation
         picker.delegate = self
         
-        //blurring the background image
-        let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.Light)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        blurView.frame = self.view.frame
-        self.view.addSubview(blurView)
-        self.view.sendSubviewToBack(blurView)
-        self.view.sendSubviewToBack(backgroundImage)
         
         //Slide menu setup
         menu.superViewController = self
