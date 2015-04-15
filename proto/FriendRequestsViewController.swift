@@ -27,8 +27,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         
         //menu configuration
         slideMenu.superViewController = self
-        
-        
         loadData()
     }
     

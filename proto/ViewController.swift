@@ -102,6 +102,7 @@ class ViewController: UIViewController, UITextFieldDelegate
                 }
                 else
                 {
+                    println(PFUser.currentUser().username)
                     appManager.user = user
                     self.performSegueWithIdentifier("login2", sender: self)
                 }

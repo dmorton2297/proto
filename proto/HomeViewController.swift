@@ -35,6 +35,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     {
         super.viewDidLoad()
         
+        println(PFUser.currentUser().username)
+        
         var navController = self.parentViewController as! UINavigationController
         
         
@@ -58,6 +60,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //subscribe this user to there push notification channel
         let currentInstallation = PFInstallation.currentInstallation()
         
+        
+        
         currentInstallation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
         currentInstallation.saveInBackgroundWithBlock { (completion, error) -> Void in
             if (error != nil)
@@ -66,18 +70,20 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
         }
         
+        loadUserData()
     }
     
     //once the view loads, load all of the users information into the viewcontroller
     override func viewDidAppear(animated: Bool)
     {
-        if (!alreadyOpened)
-        {
-            loadUserData()
-            activityIndicator.stopAnimating()
-            activityIndicator.hidden = true
-            alreadyOpened = true
-        }
+//        if (!alreadyOpened)
+//        {
+//            loadUserData()
+//            activityIndicator.stopAnimating()
+//            activityIndicator.hidden = true
+//            alreadyOpened = true
+//            println("done")
+//        }
     }
     
     //--Parse functions-----------------------------------------------------------------------------------------
@@ -85,7 +91,23 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     //this method saves posts to the current users data object
     func savePost(entry:PictureEntry)
     {
-        var dataObject:PFObject? = appManager.getUsersData()
+        var query = PFQuery(className:"UserData")
+        var dat:PFObject!
+        if (appManager.user != nil)
+        {
+            var dataID = appManager.user.objectForKey("dataID") as! String
+            println(dataID)
+            query.getObjectInBackgroundWithId("dataID", block: { (dat, error) -> Void in
+                self.finishSavingPost(dat, entry: entry)
+            })
+            println("this was not the issue")
+            
+        }
+
+    }
+    
+    func finishSavingPost(dataObject:PFObject?, entry:PictureEntry)
+    {
         if (dataObject != nil)
         {
             var locationsNames:[NSObject] = dataObject?.objectForKey("location_names") as! [NSObject]
@@ -136,6 +158,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         {
             appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
         }
+
     }
     
     
@@ -183,8 +206,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             {
                 appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
             }
+            
         })
     }
+    
     
     //function to remove a data entry from this user
     func deletePost(atIndex:Int)
