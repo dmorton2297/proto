@@ -24,17 +24,6 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     {
         super.viewDidLoad()
         
-        //styling
-        userLabel.text = "\(user.username)"
-        var profilePictureFile = user.objectForKey("profile_picture") as! PFFile
-        var profileImage = appManager.convertPFFiletoUIImage(profilePictureFile)
-        
-        profilePicture.image = profileImage
-        profilePicture.clipsToBounds = true
-        profilePicture.layer.cornerRadius = 30
-        
-
-        
         loadTableViewData()
     }
     
@@ -111,6 +100,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                     return
                 }
                 
+                var unsortedPosts = [(PictureEntry, Int)]()
                 for (var i = 0; i < locationNames.count; i++)
                 {
                     let imageFile = imageFiles[i]
@@ -122,13 +112,11 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
-                        self.data.insert(entry, atIndex: temp)
+                        unsortedPosts.append((entry, temp))
                         
-                        if (temp == locationNames.count-1)
+                        if (unsortedPosts.count == locationNames.count)
                         {
-                            self.entryTableView.reloadData()
-                            self.activityIndicator.stopAnimating()
-                            self.activityIndicator.hidden = true
+                            self.sortInfoIntoTableView(unsortedPosts)
                         }
                     })
 
@@ -144,27 +132,34 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
 
     }
     
+    func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
+    {
+        for (var i = 0; i < dat.count; i++)
+        {
+            for y in dat
+            {
+                if (y.1 == i)
+                {
+                    data.append(y.0)
+                }
+            }
+        }
+        
+        entryTableView.reloadData()
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    func loadProfilePicture()
+    {
+        let profilePictureFile = appManager.user.objectForKey("profile_picture")as! PFFile
+        
+        profilePictureFile.getDataInBackgroundWithBlock { (dat, error) -> Void in
+            var image = UIImage(data: dat)
+            if (image == nil){image = UIImage(named: "friendsIcon")}
+            self.profilePicture.image = image
+        }
+    }
+
+
     
     
     
