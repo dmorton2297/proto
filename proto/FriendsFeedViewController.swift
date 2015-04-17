@@ -104,19 +104,35 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                 var imageFiles = dat.objectForKey("images") as! [PFFile]
                 
                 
+                if (locationNames.count == 0)
+                {
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.hidden = true
+                    return
+                }
+                
                 for (var i = 0; i < locationNames.count; i++)
                 {
-                    println("we ran")
                     let imageFile = imageFiles[i]
-                    let image = appManager.convertPFFiletoUIImage(imageFile)
-                    let name = locationNames[i]
-                    let pointWorth = pointWorths[i] as! NSInteger
-                    let coordinates = CLLocation(latitude: 100, longitude: 500)
-                    
-                    let entry = PictureEntry(image: image, name: name, location: coordinates, pointWorth: pointWorth)
-                    self.data.append(entry)
+                    var temp = i
+                    imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
+                        let name = locationNames[temp]
+                        let pointWorth = pointWorths[temp]as! NSInteger
+                        let coordinates = CLLocation(latitude: 100, longitude: 500)
+                        var image = UIImage(data: data)
+                        if (image == nil){image = UIImage(named: "friendsIcon")}
+                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
+                        self.data.insert(entry, atIndex: temp)
+                        
+                        if (temp == locationNames.count-1)
+                        {
+                            self.entryTableView.reloadData()
+                            self.activityIndicator.stopAnimating()
+                            self.activityIndicator.hidden = true
+                        }
+                    })
+
                 }
-                self.entryTableView.reloadData()
             }
             else
             {

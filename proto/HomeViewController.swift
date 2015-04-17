@@ -35,8 +35,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     {
         super.viewDidLoad()
         
-        println(PFUser.currentUser().username)
-        
         var navController = self.parentViewController as! UINavigationController
         
         
@@ -101,8 +99,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         if (appManager.user != nil)
         {
             var dataID = appManager.user.objectForKey("dataID") as! String
-            println(dataID)
-            query.getObjectInBackgroundWithId("dataID", block: { (dat, error) -> Void in
+            query.getObjectInBackgroundWithId(dataID, block: { (dat, error) -> Void in
                 self.finishSavingPost(dat, entry: entry)
             })
             println("this was not the issue")
@@ -195,25 +192,28 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     self.activityIndicator.hidden = true
                     return
                 }
+                
+                //preload entry data with empty spaces, so we can avoid index out of bounds
+                //all of these values will change
+                
+                var unsortedPosts = [(PictureEntry, Int)]()
                 for (var i = 0; i < locationsNames.count; i++)
                 {
                     let imageFile = images[i]as! PFFile
                     var temp = i
                     imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
-                        println("this ran")
                         let name = locationsNames[temp]as! String
                         let pointWorth = pointWorths[temp]as! NSInteger
                         let coordinates = CLLocation(latitude: 100, longitude: 500)
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
-                        self.data.append(entry)
+                        println(temp)
+                        unsortedPosts.append((entry, temp))
                         
-                        if (temp == locationsNames.count-1)
+                        if (unsortedPosts.count == locationsNames.count)
                         {
-                            self.postsTableView.reloadData()
-                            self.activityIndicator.stopAnimating()
-                            self.activityIndicator.hidden = true
+                            self.sortInfoIntoTableView(unsortedPosts)
                         }
                     })
                     
@@ -225,6 +225,22 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
             
         })
+    }
+    
+    func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
+    {
+        for (var i = 0; i < dat.count; i++)
+        {
+            for y in dat
+            {
+                if (y.1 == i)
+                {
+                    data.append(y.0)
+                }
+            }
+        }
+        
+        postsTableView.reloadData()
     }
     
     func loadProfilePicture()
@@ -309,7 +325,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.selfieImageView.image = data[indexPath.row].image
         cell.selfieImageView.layer.cornerRadius = 5
         
-        println("Width of image \(cell.selfieImageView.frame.width). Size of the screen \(self.view.frame.width) ")
         
         cell.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, postsTableView.frame.width, 100)
         
