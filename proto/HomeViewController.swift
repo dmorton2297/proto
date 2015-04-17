@@ -57,34 +57,39 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         profilePictureImage.clipsToBounds = true
         profilePictureImage.layer.cornerRadius = 30
         
-        //subscribe this user to there push notification channel
         let currentInstallation = PFInstallation.currentInstallation()
+        var channels = currentInstallation.objectForKey("channels") as! [String]
         
+        var contains = false
         
-        
-        currentInstallation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
-        currentInstallation.saveInBackgroundWithBlock { (completion, error) -> Void in
-            if (error != nil)
+        let look = "channel\(appManager.user.objectId)"
+        for x in channels
+        {
+            if (x == look)
             {
-                appManager.displayAlert(self, title: "error", message: "could not subscribe to channel", completion: nil)
+                contains = true
             }
+        }
+        if (!contains)
+        {
+            currentInstallation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
+            currentInstallation.saveInBackgroundWithBlock({ (success, error) -> Void in
+                if (!success)
+                {
+                    appManager.displayAlert(self, title: "Error", message: "Could not sign up user for notifications", completion: nil)
+                }
+                else
+                {
+                    appManager.displayAlert(self, title: "Success", message: "You are now signed up for notifications", completion: nil)
+                }
+            })
         }
         
         loadUserData()
+        loadProfilePicture()
     }
     
-    //once the view loads, load all of the users information into the viewcontroller
-    override func viewDidAppear(animated: Bool)
-    {
-//        if (!alreadyOpened)
-//        {
-//            loadUserData()
-//            activityIndicator.stopAnimating()
-//            activityIndicator.hidden = true
-//            alreadyOpened = true
-//            println("done")
-//        }
-    }
+
     
     //--Parse functions-----------------------------------------------------------------------------------------
     
@@ -103,7 +108,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             println("this was not the issue")
             
         }
-
+        
     }
     
     func finishSavingPost(dataObject:PFObject?, entry:PictureEntry)
@@ -157,8 +162,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         else
         {
             appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
+            
         }
-
+        
     }
     
     
@@ -170,37 +176,48 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var dat:PFObject!
         if (appManager.user == nil){return}
         var dataID = appManager.user.objectForKey("dataID") as! NSString
-        query.getObjectInBackgroundWithId(dataID as String, block: { (data, error) -> Void in
+        query.getObjectInBackgroundWithId(dataID as String, block: { (dat, error) -> Void in
             
             //this following block will load if the query was successful.
             if (error == nil)
             {
                 //retrieve all of the users present information
-                var locationsNames:[NSObject] = data?.objectForKey("location_names") as! [NSObject]
-                var locationsCoordinates:[NSObject] = data?.objectForKey("location_coordinates")as! [NSObject]
-                var pointWorths: [NSObject] = data?.objectForKey("point_worth")as! [NSObject]
-                var images:[NSObject] = data?.objectForKey("images")as! [PFFile]
-                var profilePictureFile = appManager.user.objectForKey("profile_picture")as! PFFile
-                var profilePicture = appManager.convertPFFiletoUIImage(profilePictureFile)
-                
+                var locationsNames:[NSObject] = dat?.objectForKey("location_names") as! [NSObject]
+                var locationsCoordinates:[NSObject] = dat?.objectForKey("location_coordinates")as! [NSObject]
+                var pointWorths: [NSObject] = dat?.objectForKey("point_worth")as! [NSObject]
+                var images:[NSObject] = dat?.objectForKey("images")as! [PFFile]
                 //set the profile picture thumbnail
-                self.profilePictureImage.image = profilePicture
                 
                 //append the new post to the existing information
+                if (locationsNames.isEmpty)
+                {
+                    self.activityIndicator.stopAnimating()
+                    self.activityIndicator.hidden = true
+                    return
+                }
                 for (var i = 0; i < locationsNames.count; i++)
                 {
                     let imageFile = images[i]as! PFFile
-                    let image = appManager.convertPFFiletoUIImage(imageFile)
-                    let name = locationsNames[i]as! String
-                    let pointWorth = pointWorths[i]as! NSInteger
-                    let coordinates = CLLocation(latitude: 100, longitude: 500)
+                    var temp = i
+                    imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
+                        println("this ran")
+                        let name = locationsNames[temp]as! String
+                        let pointWorth = pointWorths[temp]as! NSInteger
+                        let coordinates = CLLocation(latitude: 100, longitude: 500)
+                        var image = UIImage(data: data)
+                        if (image == nil){image = UIImage(named: "friendsIcon")}
+                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
+                        self.data.append(entry)
+                        
+                        if (temp == locationsNames.count-1)
+                        {
+                            self.postsTableView.reloadData()
+                            self.activityIndicator.stopAnimating()
+                            self.activityIndicator.hidden = true
+                        }
+                    })
                     
-                    let entry = PictureEntry(image: image, name: name, location: coordinates, pointWorth: pointWorth)
-                    self.data.append(entry)
                 }
-                
-                //save the updated object
-                self.postsTableView.reloadData()
             }
             else
             {
@@ -208,6 +225,17 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
             
         })
+    }
+    
+    func loadProfilePicture()
+    {
+        let profilePictureFile = appManager.user.objectForKey("profile_picture")as! PFFile
+        
+        profilePictureFile.getDataInBackgroundWithBlock { (dat, error) -> Void in
+            var image = UIImage(data: dat)
+            if (image == nil){image = UIImage(named: "friendsIcon")}
+            self.profilePictureImage.image = image
+        }
     }
     
     

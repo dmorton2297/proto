@@ -74,7 +74,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         println("success")
         let installation = PFInstallation.currentInstallation()
         installation.setDeviceTokenFromData(deviceToken)
-        installation.save()
+        installation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
+
+        installation.saveInBackgroundWithBlock { (completion, error) -> Void in
+            if (!completion)
+            {
+                println("Could not finish configuring push notificatoins")
+            }
+        }
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
