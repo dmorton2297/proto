@@ -50,11 +50,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //Slide menu setup
         menu.superViewController = self
         
-        
-        //styling of the profile picture image
-        profilePictureImage.clipsToBounds = true
-        profilePictureImage.layer.cornerRadius = 30
-        
         let currentInstallation = PFInstallation.currentInstallation()
         var channels = currentInstallation.objectForKey("channels") as! [String]
         
@@ -241,6 +236,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         postsTableView.reloadData()
+        activityIndicator.stopAnimating()
+        activityIndicator.hidden = true
     }
     
     func loadProfilePicture()

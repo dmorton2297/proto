@@ -24,7 +24,11 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     {
         super.viewDidLoad()
         
+        //style the label
+        userLabel.text = user.username
+        
         loadTableViewData()
+        loadProfilePicture()
     }
     
     //tableview data source methods---------------------------------------------------------------------------------------------------
@@ -146,11 +150,13 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         }
         
         entryTableView.reloadData()
+        activityIndicator.stopAnimating()
+        activityIndicator.hidden = true
     }
     
     func loadProfilePicture()
     {
-        let profilePictureFile = appManager.user.objectForKey("profile_picture")as! PFFile
+        let profilePictureFile = user.objectForKey("profile_picture")as! PFFile
         
         profilePictureFile.getDataInBackgroundWithBlock { (dat, error) -> Void in
             var image = UIImage(data: dat)

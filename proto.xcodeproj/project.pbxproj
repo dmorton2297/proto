@@ -31,7 +31,7 @@
 		3FA98E6B1A9CE86C001D9E17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA98E6A1A9CE86C001D9E17 /* SystemConfiguration.framework */; };
 		3FA98E6D1A9CE87F001D9E17 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA98E6C1A9CE87F001D9E17 /* libz.dylib */; };
 		3FA98E6F1A9CE888001D9E17 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA98E6E1A9CE888001D9E17 /* libsqlite3.dylib */; };
-		3FB0CAF61A9D0EC8002782D9 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0CAF51A9D0EC8002782D9 /* AppManager.swift */; };
+		3FB0CAF61A9D0EC8002782D9 /* AppManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB0CAF51A9D0EC8002782D9 /* AppManager.swift */; settings = {COMPILER_FLAGS = "-w"; }; };
 		3FCAC2571A9D16020068C1AD /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCAC2561A9D16020068C1AD /* SignUpViewController.swift */; };
 		3FFCA13C1AA4D8DD00B961C7 /* SlideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFCA13A1AA4D8DD00B961C7 /* SlideMenu.swift */; };
 		3FFCA13D1AA4D8DD00B961C7 /* SlideMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3FFCA13B1AA4D8DD00B961C7 /* SlideMenu.xib */; };

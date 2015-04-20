@@ -63,8 +63,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         else
         {
-            let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
-            application.registerForRemoteNotificationTypes(types)
+           // let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
+            let types = UIUserNotificationType.Badge | UIUserNotificationType.Sound | UIUserNotificationType.Alert
+            let settings = UIUserNotificationSettings(forTypes: types, categories: nil)
+           application.registerUserNotificationSettings(settings)
         }
         return true
     }

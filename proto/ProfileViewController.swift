@@ -34,22 +34,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         profilePicture.clipsToBounds = true
         profilePicture.layer.cornerRadius = 10
         
-        //load the profile picture if the user has one
-        var profilePictureFile = appManager.user.objectForKey("profile_picture") as! PFFile
-        var image = appManager.convertPFFiletoUIImage(profilePictureFile)
         
-        profilePicture.image = image
+        loadProfilePicture()
         
         
-    }
-    
-    override func viewDidAppear(animated: Bool)
-    {
-        //load the profile picture if the user has one (this is just to ensure that it is loaded
-        var profilePictureFile = appManager.user.objectForKey("profile_picture") as! PFFile
-        var image = appManager.convertPFFiletoUIImage(profilePictureFile)
-        
-        profilePicture.image = image
     }
     
     
@@ -101,6 +89,24 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     {
         var dvc = segue.destinationViewController as! EditPictureViewController
         dvc.image = chosenProfileImage
+    }
+    
+    func loadProfilePicture()
+    {
+        //load the profile picture if the user has one
+        var profilePictureFile = appManager.user.objectForKey("profile_picture") as! PFFile
+        
+        profilePictureFile.getDataInBackgroundWithBlock { (dat, error) -> Void in
+            if (error == nil)
+            {
+                self.profilePicture.image = UIImage(data: dat)
+            }
+            else
+            {
+                appManager.displayAlert(self, title: "Error", message: "Could not retrieve profile picture.", completion: nil)
+            }
+        
+        }
     }
     
 }

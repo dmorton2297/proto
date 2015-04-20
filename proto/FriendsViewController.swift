@@ -14,6 +14,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     @IBOutlet var menu: SlideMenu!
     
+    var images = [UIImage]()
+    
     @IBOutlet weak var friendsTableView: UITableView!
     var data = [PFUser]()
     
@@ -68,11 +70,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "b")
             
             var username = data[indexPath.row].username
-            var pictureFile = data[indexPath.row].objectForKey("profile_picture") as! PFFile
-            var image = appManager.convertPFFiletoUIImage(pictureFile)
             
             cell.textLabel?.text = username
-            cell.imageView?.image = image
+            cell.imageView?.image = images[indexPath.row]
             cell.imageView?.clipsToBounds = true
             cell.imageView?.layer.cornerRadius = 30
             
@@ -129,11 +129,45 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             else
             {
                 self.data = d as! [PFUser]
-                self.friendsTableView.reloadData()
-                
+                self.loadUsersPhotos()
             }
         }
-
+    }
+    
+    func loadUsersPhotos()
+    {
+        var unsortedArray = [(UIImage, Int)]()
+        for (var i = 0; i < data.count; i++)
+        {
+            var x = data[i]
+            var temp = i
+            var pictureFile =  x.objectForKey("profile_picture") as! PFFile
+            pictureFile.getDataInBackgroundWithBlock({ (dat, error) -> Void in
+                var image = UIImage(data: dat)
+                unsortedArray.append((image!, temp))
+                
+                if (unsortedArray.count == self.data.count)
+                {
+                    self.sortImageArray(unsortedArray)
+                }
+            })
+        }
+    }
+    
+    func sortImageArray(unsortedArray:[(UIImage, Int)])
+    {
+        for (var i = 0; i < unsortedArray.count; i++)
+        {
+            for x in unsortedArray
+            {
+                if (x.1 == i)
+                {
+                    images.append(x.0)
+                }
+            }
+        }
+        
+        friendsTableView.reloadData()
     }
     
     //segue configurations------------------------------------------------------------------------------------
