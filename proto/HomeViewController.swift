@@ -203,7 +203,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
-                        println(temp)
                         unsortedPosts.append((entry, temp))
                         
                         if (unsortedPosts.count == locationsNames.count)
