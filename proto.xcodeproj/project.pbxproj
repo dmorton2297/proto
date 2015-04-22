@@ -178,8 +178,8 @@
 				5C44E3B01AAFC4610026BE10 /* Home */,
 				5C44E3B21AAFC4A10026BE10 /* Interface  */,
 				3FA98E2D1A9B74AA001D9E17 /* proto.xcdatamodeld */,
-				3FFCA13E1AA4DB0100B961C7 /* Images.xcassets */,
 				3FA98E291A9B74AA001D9E17 /* Supporting Files */,
+				3FFCA13E1AA4DB0100B961C7 /* Images.xcassets */,
 			);
 			path = proto;
 			sourceTree = "<group>";

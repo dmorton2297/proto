@@ -125,7 +125,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             //get rest of info for post
             var pointWorth = entry.pointWorth
             var locationName = entry.name
-            var locationCoordinates = entry.location.description
+            var locationCoordinates = "\(entry.location.coordinate.latitude), \(entry.location.coordinate.longitude)"
             
             //add new information to the array
             locationsNames.insert(locationName, atIndex: 0)
@@ -199,7 +199,36 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
                         let name = locationsNames[temp]as! String
                         let pointWorth = pointWorths[temp]as! NSInteger
-                        let coordinates = CLLocation(latitude: 100, longitude: 500)
+                        
+                        var t = locationsCoordinates[temp] as! String
+                        
+                        var a = ""
+                        var b = ""
+                        var toggle = true
+                        for x in t
+                        {
+                            if (x != "\"")
+                            {
+                                if (x == ","){toggle = false}
+                                else if (toggle)
+                                {
+                                    a = a + "\(x)"
+                                }
+                                else if (!toggle)
+                                {
+                                    b = b + "\(x)"
+                                }
+                            }
+                        }
+                        
+                        
+                        var lat = (a as NSString).doubleValue
+                        var long = (b as NSString).doubleValue
+                        
+                        
+                        
+                        let coordinates = CLLocation(latitude: lat, longitude: long)
+                        
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
@@ -311,11 +340,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //setting the title text label to
         cell.locationTextLabel.text = data[indexPath.row].name
         
-        //getting coorinates of this specific picture entry
-        let lat = data[indexPath.row].location.coordinate.latitude
-        let long = data[indexPath.row].location.coordinate.longitude
-        cell.coordinatesTextLabel.text = "Lat: 100, Long: 530"
         
+    
         //setting the image thumbnail in the cell
         cell.selfieImageView.clipsToBounds = true
         cell.selfieImageView.image = data[indexPath.row].image
@@ -387,7 +413,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
             else
             {
-                var entry = PictureEntry(image: image, name: info, location: CLLocation(latitude: 10, longitude: 10), pointWorth: 10)
+                appManager.locationManager.stopUpdatingLocation()
+                var location = appManager.locationManager.location
+                println(location.coordinate.latitude as Double)
+                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10)
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savePost(entry)

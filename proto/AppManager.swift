@@ -19,9 +19,16 @@ var appManager = AppManager()//global manager that can be used throughout projec
 class AppManager
 {
     var user:PFUser! = nil
-    //Displays a UIAlert on the given view controller,
-    //with the given message. 2/24
+    var locationManager : CLLocationManager!
     
+    init()
+    {
+        locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    //Displays a UIAlert on the given view controller
     func displayAlert(viewController:UIViewController, title:String, message:String, completion:((UIAlertAction?) -> Void)?)
     {
         //creating alertViewController and alert action.
