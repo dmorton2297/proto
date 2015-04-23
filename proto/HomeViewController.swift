@@ -202,44 +202,33 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         
                         var t = locationsCoordinates[temp] as! String
                         
-                        var a = ""
-                        var b = ""
-                        var toggle = true
-                        for x in t
-                        {
-                            if (x != "\"")
-                            {
-                                if (x == ","){toggle = false}
-                                else if (toggle)
-                                {
-                                    a = a + "\(x)"
-                                }
-                                else if (!toggle)
-                                {
-                                    b = b + "\(x)"
-                                }
-                            }
-                        }
-                        
-                        
-                        var lat = (a as NSString).doubleValue
-                        var long = (b as NSString).doubleValue
-                        
-                        
-                        
-                        let coordinates = CLLocation(latitude: lat, longitude: long)
-                        
+                        let location = self.getLocationFromString(t)
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
-                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
-                        unsortedPosts.append((entry, temp))
                         
-                        if (unsortedPosts.count == locationsNames.count)
-                        {
-                            self.sortInfoIntoTableView(unsortedPosts)
-                        }
+                        let geocoder = CLGeocoder()
+                        
+                        geocoder.reverseGeocodeLocation(location, completionHandler: { (results, error) -> Void in
+                            if (error == nil)
+                            {
+                                var locName = "Location Name"
+                                if (results.count > 0)
+                                {
+                                    var result = results[0] as! CLPlacemark
+                                    
+                                    locName = result.name
+                                }
+                                
+                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName)
+                                unsortedPosts.append((entry, temp))
+                                
+                                if (unsortedPosts.count == locationsNames.count)
+                                {
+                                    self.sortInfoIntoTableView(unsortedPosts)
+                                }
+                            }
+                        })
                     })
-                    
                 }
             }
             else
@@ -248,6 +237,36 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             }
             
         })
+    }
+    
+    func getLocationFromString(str:String) -> CLLocation
+    {
+        var a = ""
+        var b = ""
+        var toggle = true
+        for x in str
+        {
+            if (x != "\"")
+            {
+                if (x == ","){toggle = false}
+                else if (toggle)
+                {
+                    a = a + "\(x)"
+                }
+                else if (!toggle)
+                {
+                    b = b + "\(x)"
+                }
+            }
+        }
+        
+        
+        var lat = (a as NSString).doubleValue
+        var long = (b as NSString).doubleValue
+        
+        
+        
+        return CLLocation(latitude: lat, longitude: long)
     }
     
     func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
@@ -341,7 +360,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.locationTextLabel.text = data[indexPath.row].name
         
         
-    
+        println(data[indexPath.row].locationName)
+        cell.coordinatesTextLabel.text = data[indexPath.row].locationName
+        
         //setting the image thumbnail in the cell
         cell.selfieImageView.clipsToBounds = true
         cell.selfieImageView.image = data[indexPath.row].image
@@ -416,7 +437,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
                 println(location.coordinate.latitude as Double)
-                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10)
+                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10, locationName: "temp")
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savePost(entry)

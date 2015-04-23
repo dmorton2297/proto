@@ -18,6 +18,7 @@ struct PictureEntry{
     var name : String
     var location : CLLocation
     var pointWorth : Int
+    var locationName : String
 }
 
 

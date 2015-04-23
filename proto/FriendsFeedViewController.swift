@@ -115,7 +115,10 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                         let coordinates = CLLocation(latitude: 100, longitude: 500)
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
-                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth)
+                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth, locationName: "temp")
+                        
+                        let geocoder = CLGeocoder()
+                        
                         unsortedPosts.append((entry, temp))
                         
                         if (unsortedPosts.count == locationNames.count)
@@ -135,6 +138,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         })
 
     }
+    
     
     func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
     {
