@@ -393,7 +393,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     //handles if tableview is selected
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
         performSegueWithIdentifier("detail", sender: self)
     }
     
@@ -496,6 +495,19 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBAction func menuButtonPressed(sender: AnyObject)
     {
         menu.toggleMenu(menu)
+    }
+    
+    //segue configuration   
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var dvc = segue.destinationViewController as! PostDetailViewController
+        
+        var index = postsTableView.indexPathForSelectedRow()!.row
+        var post = data[index]
+    
+        
+        postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
+        dvc.post = post
+        dvc.user = appManager.user
     }
     
 }

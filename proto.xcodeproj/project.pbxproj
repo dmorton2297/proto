@@ -38,8 +38,8 @@
 		3FFCA13F1AA4DB0100B961C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3FFCA13E1AA4DB0100B961C7 /* Images.xcassets */; };
 		3FFF61C21AA53EFB00CF650B /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFF61C11AA53EFB00CF650B /* FriendsViewController.swift */; };
 		5C0AE9D31ADCA09200E6D485 /* FriendsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0AE9D21ADCA09200E6D485 /* FriendsFeedViewController.swift */; };
+		5C292B961AEEC11D004A69B9 /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C292B951AEEC11D004A69B9 /* PostDetailViewController.swift */; };
 		5C32DACE1A9EC511003A8547 /* PictureEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32DACD1A9EC511003A8547 /* PictureEntryTableViewCell.swift */; };
-		5C62EEA01AEE9C50005AFAC3 /* HomeDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C62EE9F1AEE9C50005AFAC3 /* HomeDetailViewController.swift */; };
 		5C804D281ADAEE7F00220C4A /* FriendRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C804D271ADAEE7F00220C4A /* FriendRequestsViewController.swift */; };
 		5C942D621AAF532A006B6AE6 /* AddFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C942D611AAF532A006B6AE6 /* AddFriendsViewController.swift */; };
 		5CD1FD7E1A9E5EE1008B3256 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1FD7D1A9E5EE1008B3256 /* HomeViewController.swift */; };
@@ -91,8 +91,8 @@
 		3FFCA13E1AA4DB0100B961C7 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = SOURCE_ROOT; };
 		3FFF61C11AA53EFB00CF650B /* FriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		5C0AE9D21ADCA09200E6D485 /* FriendsFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsFeedViewController.swift; sourceTree = "<group>"; };
+		5C292B951AEEC11D004A69B9 /* PostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		5C32DACD1A9EC511003A8547 /* PictureEntryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PictureEntryTableViewCell.swift; path = ../PictureEntryTableViewCell.swift; sourceTree = "<group>"; };
-		5C62EE9F1AEE9C50005AFAC3 /* HomeDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeDetailViewController.swift; sourceTree = "<group>"; };
 		5C804D271ADAEE7F00220C4A /* FriendRequestsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestsViewController.swift; sourceTree = "<group>"; };
 		5C942D611AAF532A006B6AE6 /* AddFriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendsViewController.swift; path = proto/AddFriendsViewController.swift; sourceTree = SOURCE_ROOT; };
 		5CD1FD7D1A9E5EE1008B3256 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -170,6 +170,7 @@
 		3FA98E281A9B74AA001D9E17 /* proto */ = {
 			isa = PBXGroup;
 			children = (
+				5C292B941AEEC109004A69B9 /* PostsDetailView */,
 				5C804D261ADAEE6700220C4A /* FriendRequests */,
 				3F964F681ACD9B22001EE1FB /* EditPicture */,
 				3F5B9FFA1AB34C940029824D /* Profile */,
@@ -251,6 +252,14 @@
 			path = SlideMenu;
 			sourceTree = "<group>";
 		};
+		5C292B941AEEC109004A69B9 /* PostsDetailView */ = {
+			isa = PBXGroup;
+			children = (
+				5C292B951AEEC11D004A69B9 /* PostDetailViewController.swift */,
+			);
+			name = PostsDetailView;
+			sourceTree = "<group>";
+		};
 		5C44E3AE1AAFC4080026BE10 /* Sign-up and Log-in */ = {
 			isa = PBXGroup;
 			children = (
@@ -273,7 +282,6 @@
 		5C44E3B01AAFC4610026BE10 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				5C62EE9F1AEE9C50005AFAC3 /* HomeDetailViewController.swift */,
 				5CD1FD7D1A9E5EE1008B3256 /* HomeViewController.swift */,
 			);
 			name = Home;
@@ -408,7 +416,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C62EEA01AEE9C50005AFAC3 /* HomeDetailViewController.swift in Sources */,
 				3FFCA13C1AA4D8DD00B961C7 /* SlideMenu.swift in Sources */,
 				3FFF61C21AA53EFB00CF650B /* FriendsViewController.swift in Sources */,
 				3FA98E311A9B74AA001D9E17 /* ViewController.swift in Sources */,
@@ -416,6 +423,7 @@
 				3FA98E2C1A9B74AA001D9E17 /* AppDelegate.swift in Sources */,
 				3FB0CAF61A9D0EC8002782D9 /* AppManager.swift in Sources */,
 				3F5B9FFC1AB34CA90029824D /* ProfileViewController.swift in Sources */,
+				5C292B961AEEC11D004A69B9 /* PostDetailViewController.swift in Sources */,
 				5C942D621AAF532A006B6AE6 /* AddFriendsViewController.swift in Sources */,
 				3FCAC2571A9D16020068C1AD /* SignUpViewController.swift in Sources */,
 				5C32DACE1A9EC511003A8547 /* PictureEntryTableViewCell.swift in Sources */,
