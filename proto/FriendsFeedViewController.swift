@@ -39,7 +39,6 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        println(data.count)
         if (!data.isEmpty)
         {
             var cell = tableView.dequeueReusableCellWithIdentifier("recentLocCell") as! PictureEntryTableViewCell
@@ -47,17 +46,12 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
             cell.locationTextLabel.text = data[indexPath.row].name
             
             //getting coorinates of this specific picture entry
-            let lat = data[indexPath.row].location.coordinate.latitude
-            let long = data[indexPath.row].location.coordinate.longitude
-            cell.coordinatesTextLabel.text = "Lat: 100, Long: 530"
+            cell.coordinatesTextLabel.text = data[indexPath.row].locationName
             
             //setting the image thumbnail in the cell
             cell.selfieImageView.clipsToBounds = true
             cell.selfieImageView.image = data[indexPath.row].image
             cell.selfieImageView.layer.cornerRadius = 5
-            
-            println("Width of image \(cell.selfieImageView.frame.width). Size of the screen \(self.view.frame.width) ")
-            
             cell.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, entryTableView.frame.width, 100)
             
             
@@ -112,32 +106,78 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                     imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
                         let name = locationNames[temp]
                         let pointWorth = pointWorths[temp]as! NSInteger
-                        let coordinates = CLLocation(latitude: 100, longitude: 500)
+                        
+                        var t = locationCoordinates[temp]
+                        
+                        let location = self.getLocationFromString(t)
                         var image = UIImage(data: data)
                         if (image == nil){image = UIImage(named: "friendsIcon")}
-                        let entry = PictureEntry(image: image!, name: name, location: coordinates, pointWorth: pointWorth, locationName: "temp")
                         
                         let geocoder = CLGeocoder()
                         
-                        unsortedPosts.append((entry, temp))
-                        
-                        if (unsortedPosts.count == locationNames.count)
-                        {
-                            self.sortInfoIntoTableView(unsortedPosts)
-                        }
+                        geocoder.reverseGeocodeLocation(location, completionHandler: { (results, error) -> Void in
+                            if (error == nil)
+                            {
+                                var locName = "Location Name"
+                                if (results.count > 0)
+                                {
+                                    var result = results[0] as! CLPlacemark
+                                    
+                                    locName = result.name
+                                }
+                                
+                                
+                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName)
+                                unsortedPosts.append((entry, temp))
+                                
+                                if (unsortedPosts.count == locationNames.count)
+                                {
+                                    self.sortInfoIntoTableView(unsortedPosts)
+                                }
+                            }
+                        })
                     })
-
                 }
             }
             else
             {
-                println("we encounterd an error")
+                appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
             }
             
-            
         })
-
     }
+    
+    func getLocationFromString(str:String) -> CLLocation
+    {
+        var a = ""
+        var b = ""
+        var toggle = true
+        for x in str
+        {
+            if (x != "\"")
+            {
+                if (x == ","){toggle = false}
+                else if (toggle)
+                {
+                    a = a + "\(x)"
+                }
+                else if (!toggle)
+                {
+                    b = b + "\(x)"
+                }
+            }
+        }
+        
+        
+        var lat = (a as NSString).doubleValue
+        var long = (b as NSString).doubleValue
+        
+        
+        
+        return CLLocation(latitude: lat, longitude: long)
+    }
+
+
     
     
     func sortInfoIntoTableView(dat:[(PictureEntry, Int)])

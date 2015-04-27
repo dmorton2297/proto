@@ -360,7 +360,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.locationTextLabel.text = data[indexPath.row].name
         
         
-        println(data[indexPath.row].locationName)
         cell.coordinatesTextLabel.text = data[indexPath.row].locationName
         
         //setting the image thumbnail in the cell
