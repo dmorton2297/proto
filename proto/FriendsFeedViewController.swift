@@ -89,6 +89,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                 var locationCoordinates = dat.objectForKey("location_coordinates") as! [String]
                 var pointWorths = dat.objectForKey("point_worth") as! [NSObject]
                 var imageFiles = dat.objectForKey("images") as! [PFFile]
+                var dates = dat.objectForKey("dates") as! [NSDate]
                 
                 
                 if (locationNames.count == 0)
@@ -111,6 +112,8 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                         
                         let location = self.getLocationFromString(t)
                         var image = UIImage(data: data)
+                        
+                        var date = dates[temp]
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         
                         let geocoder = CLGeocoder()
@@ -127,7 +130,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                                 }
                                 
                                 
-                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date:NSDate())
+                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date:date)
                                 unsortedPosts.append((entry, temp))
                                 
                                 if (unsortedPosts.count == locationNames.count)
