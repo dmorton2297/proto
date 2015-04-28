@@ -19,6 +19,7 @@ struct PictureEntry{
     var location : CLLocation
     var pointWorth : Int
     var locationName : String
+    var date : NSDate
 }
 
 

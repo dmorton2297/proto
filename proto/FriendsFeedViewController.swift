@@ -127,7 +127,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                                 }
                                 
                                 
-                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName)
+                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date:NSDate())
                                 unsortedPosts.append((entry, temp))
                                 
                                 if (unsortedPosts.count == locationNames.count)

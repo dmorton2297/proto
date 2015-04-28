@@ -41,5 +41,16 @@ class PostDetailViewController: UIViewController {
         mapButton.clipsToBounds = true
         mapButton.layer.cornerRadius = 10
         
+        dateLabel.text = toStringOfAbbrevMonthDayAndTime(post.date)
+        
+        
+    }
+    
+    func toStringOfAbbrevMonthDayAndTime(date:NSDate) -> String
+    {
+        //convert to regular looking time
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MMM d, hh:mm aa"
+        return dateFormatter.stringFromDate(date)
     }
 }

@@ -110,6 +110,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             var locationsCoordinates:[NSObject] = dataObject?.objectForKey("location_coordinates") as! [NSObject]
             var pointWorths: [NSObject] = dataObject?.objectForKey("point_worth") as! [NSObject]
             var images:[NSObject] = dataObject?.objectForKey("images") as! [PFFile]
+            var dates:[NSDate] = dataObject?.objectForKey("dates") as! [NSDate]
             //check if the size of the arrays are more that 15
             if (locationsNames.count == 15)
             {
@@ -131,6 +132,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             locationsCoordinates.insert(locationCoordinates, atIndex: 0)
             pointWorths.insert(pointWorth, atIndex: 0)
             images.insert(imageFile, atIndex: 0)
+            dates.insert(NSDate(), atIndex: 0)
             var newObject = dataObject!
             
             //create the new object to save
@@ -138,6 +140,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             newObject["location_coordinates"] = locationsCoordinates
             newObject["point_worth"] = pointWorths
             newObject["images"] = images
+            newObject["dates"] = dates
             //save the new object
             newObject.saveInBackgroundWithBlock({ (test, error) -> Void in
                 if (!test)
@@ -194,6 +197,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 var locationsCoordinates:[NSObject] = dat?.objectForKey("location_coordinates")as! [NSObject]
                 var pointWorths: [NSObject] = dat?.objectForKey("point_worth")as! [NSObject]
                 var images:[NSObject] = dat?.objectForKey("images")as! [PFFile]
+                var dates:[NSDate] = dat?.objectForKey("dates") as! [NSDate]
                 //set the profile picture thumbnail
                 
                 //append the new post to the existing information
@@ -220,6 +224,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                         
                         let location = self.getLocationFromString(t)
                         var image = UIImage(data: data)
+                        
+                        var date = dates[temp]
                         if (image == nil){image = UIImage(named: "friendsIcon")}
                         
                         let geocoder = CLGeocoder()
@@ -235,7 +241,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                                     locName = result.locality
                                 }
                                 
-                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName)
+                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date: date)
                                 unsortedPosts.append((entry, temp))
                                 
                                 if (unsortedPosts.count == locationsNames.count)
@@ -452,7 +458,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
                 println(location.coordinate.latitude as Double)
-                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10, locationName: "temp")
+                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10, locationName: "temp", date:NSDate())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savePost(entry)
