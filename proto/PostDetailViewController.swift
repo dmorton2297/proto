@@ -18,6 +18,7 @@ class PostDetailViewController: UIViewController {
     
     @IBOutlet weak var postImageView: UIImageView! //image view connection from storybaord. will load image from post into this view.
     
+    @IBOutlet weak var mapButton: UIButton!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -27,6 +28,8 @@ class PostDetailViewController: UIViewController {
         
         //configure stylingsettings for the imageview
         postImageView.contentMode = UIViewContentMode.ScaleAspectFit
+        postImageView.clipsToBounds = true
+        postImageView.layer.cornerRadius = 10
         
         postImageView.image = post.image
         
@@ -34,6 +37,9 @@ class PostDetailViewController: UIViewController {
         userNameLabel.text = user.username
         
         locationLabel.text = post.locationName
+        
+        mapButton.clipsToBounds = true
+        mapButton.layer.cornerRadius = 10
         
     }
 }
