@@ -195,10 +195,10 @@
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="300" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Gj5-5x-jmD">
                                 <rect key="frame" x="0.0" y="73" width="600" height="463"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.11" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="recentLocCell" rowHeight="300" id="zqB-XZ-3n7" customClass="PictureEntryTableViewCell" customModule="proto" customModuleProvider="target">
+                                    <tableViewCell opaque="NO" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="recentLocCell" rowHeight="300" id="zqB-XZ-3n7" customClass="PictureEntryTableViewCell" customModule="proto" customModuleProvider="target">
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zqB-XZ-3n7" id="CuO-Gq-FN3">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -238,6 +238,7 @@
                                                     </constraints>
                                                 </view>
                                             </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="bottomMargin" secondItem="E7W-oB-cMp" secondAttribute="bottom" constant="-0.5" id="PSV-Kb-hTx"/>
                                                 <constraint firstItem="E7W-oB-cMp" firstAttribute="leading" secondItem="CuO-Gq-FN3" secondAttribute="leadingMargin" id="UbV-FT-Fle"/>
@@ -248,7 +249,7 @@
                                                 <constraint firstItem="E7W-oB-cMp" firstAttribute="trailing" secondItem="CuO-Gq-FN3" secondAttribute="trailingMargin" id="ntd-RB-NeR"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.11" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="coordinatesTextLabel" destination="PEc-nc-ciA" id="Mrp-CF-3G4"/>
                                             <outlet property="locationTextLabel" destination="umP-b0-Nfu" id="XAd-hl-6eW"/>
@@ -267,7 +268,7 @@
                                 <gestureRecognizers/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="wyZ-qi-JYq" firstAttribute="trailing" secondItem="oh1-ZJ-E1A" secondAttribute="trailingMargin" id="1IS-Ck-m5C"/>
@@ -597,7 +598,7 @@
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="101" id="5oQ-cS-xzm"/>
                                     <constraint firstItem="KJc-en-Lue" firstAttribute="leading" secondItem="U5v-sK-Fbp" secondAttribute="leading" constant="16" id="KWY-Vn-dhQ"/>
@@ -608,7 +609,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="0Dd-Ui-FBI" firstAttribute="top" secondItem="RpC-r3-oh6" secondAttribute="bottom" constant="6" id="88V-Gh-wKT"/>
                             <constraint firstItem="U5v-sK-Fbp" firstAttribute="top" secondItem="RpC-r3-oh6" secondAttribute="bottom" constant="-2" id="9PI-0g-eHZ"/>
@@ -1206,5 +1207,5 @@
     <inferredMetricsTieBreakers>
         <segue reference="Qdz-LK-ldL"/>
     </inferredMetricsTieBreakers>
-    <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+    <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
 </document>

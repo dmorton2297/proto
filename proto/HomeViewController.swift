@@ -38,7 +38,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var navController = self.parentViewController as! UINavigationController
         
         
-        postsTableView.backgroundColor = UIColor(white: 1, alpha: 0.3)
         //start activity indicator
         activityIndicator.hidden = false
         activityIndicator.startAnimating()
@@ -147,6 +146,23 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 }
                 else
                 {
+                    let geo = CLGeocoder()
+                    
+                    geo.reverseGeocodeLocation(self.getLocationFromString(locationCoordinates), completionHandler: { (results, error) -> Void in
+                        if (error != nil)
+                        {
+                            appManager.displayAlert(self, title: "Error", message: "Uncable to finish saving post", completion: nil)
+                        }
+                        else
+                        {
+                            if (results.count > 0)
+                            {
+                                println("This ran")
+                                self.data[0].locationName = results[0].locality
+                                self.postsTableView.reloadData()
+                            }
+                        }
+                    })
                     appManager.displayAlert(self, title: "Success", message: "Your image was successfully uploaded.", completion: nil)
                 }
             })
@@ -216,7 +232,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                                 {
                                     var result = results[0] as! CLPlacemark
                                     
-                                    locName = result.name
+                                    locName = result.locality
                                 }
                                 
                                 let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName)
