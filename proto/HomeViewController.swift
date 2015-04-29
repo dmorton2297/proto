@@ -80,6 +80,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         loadUserData()
         loadProfilePicture()
     }
+
     
 
     
@@ -527,9 +528,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var post = data[index]
     
         
-        postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
         dvc.post = post
         dvc.user = appManager.user
+        dvc.index = index
+        dvc.presentView = self
     }
     
 }

@@ -596,21 +596,29 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xcn-xA-vNR">
-                                        <rect key="frame" x="504" y="21" width="88" height="59"/>
+                                        <rect key="frame" x="548" y="54" width="52" height="41"/>
                                         <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="52" id="AhU-Bs-h5G"/>
+                                            <constraint firstAttribute="height" constant="41" id="Xtr-Jv-Y75"/>
+                                            <constraint firstAttribute="height" constant="37" id="bJe-w8-uG9"/>
                                             <constraint firstAttribute="width" constant="67" id="ePF-sF-TYm"/>
                                             <constraint firstAttribute="width" constant="88" id="fZc-rg-WmV"/>
+                                            <constraint firstAttribute="width" constant="52" id="gd5-MQ-hKW"/>
                                             <constraint firstAttribute="height" constant="30" id="kLJ-Zr-8zm"/>
                                             <constraint firstAttribute="height" constant="59" id="rxC-Ke-75y"/>
                                         </constraints>
-                                        <state key="normal" title="Map" backgroundImage="button">
+                                        <state key="normal" backgroundImage="mapIcon">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <variation key="default">
                                             <mask key="constraints">
+                                                <exclude reference="AhU-Bs-h5G"/>
+                                                <exclude reference="bJe-w8-uG9"/>
                                                 <exclude reference="ePF-sF-TYm"/>
+                                                <exclude reference="fZc-rg-WmV"/>
                                                 <exclude reference="kLJ-Zr-8zm"/>
+                                                <exclude reference="rxC-Ke-75y"/>
                                             </mask>
                                         </variation>
                                     </button>
@@ -620,10 +628,18 @@
                                     <constraint firstAttribute="height" constant="101" id="5oQ-cS-xzm"/>
                                     <constraint firstAttribute="bottom" secondItem="Xcn-xA-vNR" secondAttribute="bottom" constant="21" id="BYA-47-wf4"/>
                                     <constraint firstItem="KJc-en-Lue" firstAttribute="leading" secondItem="U5v-sK-Fbp" secondAttribute="leading" constant="16" id="KWY-Vn-dhQ"/>
+                                    <constraint firstAttribute="trailing" secondItem="Xcn-xA-vNR" secondAttribute="trailing" id="N6K-Ij-MFN"/>
+                                    <constraint firstAttribute="bottom" secondItem="Xcn-xA-vNR" secondAttribute="bottom" constant="6" id="PhM-SY-l5m"/>
                                     <constraint firstItem="7p3-ct-F7p" firstAttribute="leading" secondItem="U5v-sK-Fbp" secondAttribute="leading" constant="16" id="Upm-nd-G0a"/>
                                     <constraint firstItem="0Dd-Ui-FBI" firstAttribute="leading" secondItem="U5v-sK-Fbp" secondAttribute="leading" constant="16" id="Vr2-We-0p9"/>
                                     <constraint firstAttribute="trailing" secondItem="Xcn-xA-vNR" secondAttribute="trailing" constant="8" id="ZEc-x9-zzS"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="BYA-47-wf4"/>
+                                        <exclude reference="ZEc-x9-zzS"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RpC-r3-oh6">
                                 <rect key="frame" x="11" y="8" width="578" height="417"/>
@@ -651,6 +667,9 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="infoButtonPressed:" destination="BcT-YM-HU5" eventType="touchUpInside" id="ZJl-cT-HGx"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
@@ -1233,6 +1252,7 @@
     <resources>
         <image name="button" width="476" height="231"/>
         <image name="cameraroll" width="311" height="368"/>
+        <image name="mapIcon" width="128" height="128"/>
         <image name="menuIcon" width="32" height="32"/>
         <image name="profilePicturePlaceholder" width="370" height="370"/>
     </resources>
