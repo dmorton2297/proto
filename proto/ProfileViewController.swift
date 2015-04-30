@@ -12,7 +12,6 @@ import Parse
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     
-    @IBOutlet var slideMenu: SlideMenu! //connection from UIStoryboard
     @IBOutlet var profilePicture: UIImageView! //Profile picture connection from UIStoryBoard
     var chosenProfileImage : UIImage! //This will be used when setting a new profile picture
     
@@ -23,7 +22,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         super.viewDidLoad()
         
         //slide menu configuration
-        slideMenu.superViewController = self
 
         
         //configure the imagPicker
@@ -42,29 +40,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     
     //IBActions--------------------------
-    
-    @IBAction func swiped(sender: AnyObject)
-    {
-        if (sender.state ==
-            UIGestureRecognizerState.Ended)
-        {
-            var conditionOne = slideMenu.hidden
-            var conditionTwo = sender.velocityInView(self.view).x < 0
-            var conditionThree = sender.velocityInView(self.view).x > 0
-            
-            if (conditionOne && conditionTwo || !conditionOne && conditionThree)
-            {
-                slideMenu.toggleMenu(slideMenu)
-            }
-            slideMenu.toggleMenu(slideMenu)
-        }
-    }
-    
-    //toggle the slide menu
-    @IBAction func menuButtonPressed(sender: AnyObject)
-    {
-        slideMenu.toggleMenu(slideMenu)
-    }
     
     //present the option to change your profile picture
     @IBAction func changeProfilePictureButtonPressed(sender: AnyObject)

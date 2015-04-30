@@ -18,7 +18,6 @@ import Parse
 
 class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    @IBOutlet var menu: SlideMenu! //menu connection from storyboard
     @IBOutlet var postsTableView: UITableView! //connection to tableview in view controller
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView! //connection used wen there is an external process happending
     @IBOutlet var profilePictureImage: UIImageView! //placeholder for the profile picture of a user
@@ -47,7 +46,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         
         //Slide menu setup
-        menu.superViewController = self
         
         let currentInstallation = PFInstallation.currentInstallation()
         var channels = currentInstallation.objectForKey("channels") as! [String]
@@ -383,7 +381,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.locationTextLabel.text = data[indexPath.row].name
         
         
-        cell.coordinatesTextLabel.text = data[indexPath.row].locationName
+        cell.coordinatesTextLabel.text = "\(data[indexPath.row].locationName) \(toStringOfAbbrevMonthDayAndTime(data[indexPath.row].date))"
         
         //setting the image thumbnail in the cell
         cell.selfieImageView.clipsToBounds = true
@@ -497,41 +495,24 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     //menu setup---------------------------------------------------------------------------------------------
-    
-    @IBAction func swiped(sender: UIPanGestureRecognizer)
-    {
-        if (sender.state ==
-            UIGestureRecognizerState.Ended)
-        {
-            var conditionOne = menu.hidden
-            var conditionTwo = sender.velocityInView(self.view).x < 0
-            var conditionThree = sender.velocityInView(self.view).x > 0
-            
-            if (conditionOne && conditionTwo || !conditionOne && conditionThree)
-            {
-                menu.toggleMenu(menu)
-            }
-            menu.toggleMenu(menu)
-        }
-    }
-    
-    @IBAction func menuButtonPressed(sender: AnyObject)
-    {
-        menu.toggleMenu(menu)
-    }
-    
-    //segue configuration   
+    //segue configuration
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var dvc = segue.destinationViewController as! PostDetailViewController
+        dvc.location = data[postsTableView.indexPathForSelectedRow()!.row].location
         
-        var index = postsTableView.indexPathForSelectedRow()!.row
-        var post = data[index]
-    
+        postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
         
-        dvc.post = post
-        dvc.user = appManager.user
-        dvc.index = index
-        dvc.presentView = self
     }
+    
+    //date utility
+    func toStringOfAbbrevMonthDayAndTime(date:NSDate) -> String
+    {
+        //convert to regular looking time
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MMM d, hh:mm aa"
+        return dateFormatter.stringFromDate(date)
+    }
+    
+    
     
 }

@@ -40,6 +40,7 @@
 		5C0AE9D31ADCA09200E6D485 /* FriendsFeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0AE9D21ADCA09200E6D485 /* FriendsFeedViewController.swift */; };
 		5C292B961AEEC11D004A69B9 /* PostDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C292B951AEEC11D004A69B9 /* PostDetailViewController.swift */; };
 		5C32DACE1A9EC511003A8547 /* PictureEntryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C32DACD1A9EC511003A8547 /* PictureEntryTableViewCell.swift */; };
+		5C62A6811AF2943900909368 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C62A6801AF2943900909368 /* MapKit.framework */; };
 		5C804D281ADAEE7F00220C4A /* FriendRequestsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C804D271ADAEE7F00220C4A /* FriendRequestsViewController.swift */; };
 		5C942D621AAF532A006B6AE6 /* AddFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C942D611AAF532A006B6AE6 /* AddFriendsViewController.swift */; };
 		5CD1FD7E1A9E5EE1008B3256 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD1FD7D1A9E5EE1008B3256 /* HomeViewController.swift */; };
@@ -93,6 +94,7 @@
 		5C0AE9D21ADCA09200E6D485 /* FriendsFeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsFeedViewController.swift; sourceTree = "<group>"; };
 		5C292B951AEEC11D004A69B9 /* PostDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostDetailViewController.swift; sourceTree = "<group>"; };
 		5C32DACD1A9EC511003A8547 /* PictureEntryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PictureEntryTableViewCell.swift; path = ../PictureEntryTableViewCell.swift; sourceTree = "<group>"; };
+		5C62A6801AF2943900909368 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		5C804D271ADAEE7F00220C4A /* FriendRequestsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendRequestsViewController.swift; sourceTree = "<group>"; };
 		5C942D611AAF532A006B6AE6 /* AddFriendsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddFriendsViewController.swift; path = proto/AddFriendsViewController.swift; sourceTree = SOURCE_ROOT; };
 		5CD1FD7D1A9E5EE1008B3256 /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C62A6811AF2943900909368 /* MapKit.framework in Frameworks */,
 				3FA98E6F1A9CE888001D9E17 /* libsqlite3.dylib in Frameworks */,
 				3FA98E6D1A9CE87F001D9E17 /* libz.dylib in Frameworks */,
 				3FA98E6B1A9CE86C001D9E17 /* SystemConfiguration.framework in Frameworks */,
@@ -215,6 +218,7 @@
 		3FA98E4E1A9CE77C001D9E17 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5C62A6801AF2943900909368 /* MapKit.framework */,
 				3FA98E6E1A9CE888001D9E17 /* libsqlite3.dylib */,
 				3FA98E6C1A9CE87F001D9E17 /* libz.dylib */,
 				3FA98E6A1A9CE86C001D9E17 /* SystemConfiguration.framework */,

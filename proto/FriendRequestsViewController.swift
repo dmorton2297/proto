@@ -13,7 +13,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
 {
     //connections from storyboard
     
-    @IBOutlet weak var slideMenu: SlideMenu!//slide menu connection from storyboard
     
     @IBOutlet weak var requestsTableView: UITableView!
     
@@ -26,36 +25,13 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         super.viewDidLoad()
         
         //menu configuration
-        slideMenu.superViewController = self
         loadData()
     }
     
     //IBActions---------------------------------
     
     //this method wil fire when the user clicks the menu button in the navigation bar. It will toggle the nav panel
-    @IBAction func menuButtonPressed(sender: AnyObject)
-    {
-        slideMenu.toggleMenu(slideMenu)
-    }
-    
     //this method will fire when the user pans for the menu. This will toggle the nav panel
-    @IBAction func swipedForMenu(sender: AnyObject)
-    {
-        if (sender.state ==
-            UIGestureRecognizerState.Ended)
-        {
-            var conditionOne = slideMenu.hidden
-            var conditionTwo = sender.velocityInView(self.view).x < 0
-            var conditionThree = sender.velocityInView(self.view).x > 0
-            
-            if (conditionOne && conditionTwo || !conditionOne && conditionThree)
-            {
-                slideMenu.toggleMenu(slideMenu)
-            }
-            slideMenu.toggleMenu(slideMenu)
-        }
-
-    }
     
     //tableViewConfigurations-------------------------------------------------------------------------
     

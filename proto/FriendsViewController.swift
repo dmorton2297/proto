@@ -12,7 +12,6 @@ import Parse
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
 
-    @IBOutlet var menu: SlideMenu!
     
     var images = [UIImage]()
     
@@ -24,7 +23,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         
         //menu setup----------------
-        menu.superViewController = self
 
         
         self.loadTableViewData()
@@ -32,29 +30,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //IBActions from storyboard-------------------
-    
-
-    @IBAction func swiped(sender: AnyObject)
-    {
-        if (sender.state ==
-            UIGestureRecognizerState.Ended)
-        {
-            var conditionOne = menu.hidden
-            var conditionTwo = sender.velocityInView(self.view).x < 0
-            var conditionThree = sender.velocityInView(self.view).x > 0
-            
-            if (conditionOne && conditionTwo || !conditionOne && conditionThree)
-            {
-                menu.toggleMenu(menu)
-            }
-            menu.toggleMenu(menu)
-        }
-    }
-    
-    @IBAction func menuButtonPressed(sender: AnyObject)
-    {
-        menu.toggleMenu(menu)
-    }
     
     //UITableViewDataSource methods------------------------------
     
