@@ -122,6 +122,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             friends["friends"] = [NSData]()
             friends["requested"] = [NSData]()
             
+            
             //this following array will contain a custom PFFile class which will represent
             //a photo message
             userdata.save()
@@ -135,6 +136,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             // other fields can be set just like with PFObject
             user["dataID"] = userdata.objectId
             user["friendsDataID"] = friends.objectId
+            user["image_posts"] = [NSString]()
             
             var defaultImage = UIImage(named: "profilePicturePlaceholder")
             var defImageFile = appManager.convertUIImageToPFFile(defaultImage!)

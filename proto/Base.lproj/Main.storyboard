@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -395,7 +395,7 @@
                                 <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="30"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="300" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ojP-k1-HgR">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="300" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ojP-k1-HgR">
                                 <rect key="frame" x="0.0" y="137" width="600" height="463"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.11" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
@@ -558,7 +558,7 @@
                                     <outlet property="delegate" destination="Sfq-yD-2o6" id="xhg-fH-2wd"/>
                                 </connections>
                             </textField>
-                            <tableView clipsSubviews="YES" alpha="0.49999999999999961" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xfh-Wu-8Kq">
+                            <tableView clipsSubviews="YES" alpha="0.49999999999999961" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="xfh-Wu-8Kq">
                                 <rect key="frame" x="-8" y="110" width="608" height="470"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
@@ -888,11 +888,13 @@
             </objects>
             <point key="canvasLocation" x="75" y="1045"/>
         </scene>
-        <!--Me-->
+        <!--Home-->
         <scene sceneID="T81-mz-Lv6">
             <objects>
                 <navigationController storyboardIdentifier="home" automaticallyAdjustsScrollViewInsets="NO" id="Crr-9f-ipw" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Me" id="Gx6-vd-da5"/>
+                    <tabBarItem key="tabBarItem" title="Home" image="homeIcon" id="Gx6-vd-da5">
+                        <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="0.0"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rbQ-mR-pAt">
@@ -908,11 +910,11 @@
             </objects>
             <point key="canvasLocation" x="1769" y="259"/>
         </scene>
-        <!--Item-->
+        <!--Friends-->
         <scene sceneID="WmA-bR-3zj">
             <objects>
                 <navigationController storyboardIdentifier="friends" automaticallyAdjustsScrollViewInsets="NO" id="Niu-bz-3Eo" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="tCL-KS-fh9"/>
+                    <tabBarItem key="tabBarItem" title="Friends" image="friendsIcon" id="tCL-KS-fh9"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mjf-fV-eF9">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1023,11 +1025,11 @@
             </objects>
             <point key="canvasLocation" x="2481" y="2362"/>
         </scene>
-        <!--Item-->
+        <!--Profile-->
         <scene sceneID="Qbj-8o-D22">
             <objects>
                 <navigationController storyboardIdentifier="ProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="eOa-t0-4B0" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="M7c-SH-r66"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="1430779184_account_friend_human_man_member_person_profile_user_users-128" id="M7c-SH-r66"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="x8w-c7-JBH">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1063,11 +1065,11 @@
             </objects>
             <point key="canvasLocation" x="845" y="1221"/>
         </scene>
-        <!--Item-->
+        <!--Requests-->
         <scene sceneID="7KK-Zh-B16">
             <objects>
                 <navigationController storyboardIdentifier="friendRequests" automaticallyAdjustsScrollViewInsets="NO" id="fZL-nX-ldT" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="X4m-xd-ZjG"/>
+                    <tabBarItem key="tabBarItem" title="Requests" image="1430778902_alert-128" id="X4m-xd-ZjG"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lC9-9A-yJ8">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -1084,9 +1086,13 @@
         </scene>
     </scenes>
     <resources>
+        <image name="1430778902_alert-128" width="38" height="38"/>
+        <image name="1430779184_account_friend_human_man_member_person_profile_user_users-128" width="42" height="42"/>
         <image name="button" width="476" height="231"/>
         <image name="cameraroll" width="311" height="368"/>
-        <image name="profilePicturePlaceholder" width="370" height="370"/>
+        <image name="friendsIcon" width="42" height="42"/>
+        <image name="homeIcon" width="42" height="42"/>
+        <image name="profilePicturePlaceholder" width="123" height="123"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Vwk-ep-guk"/>
