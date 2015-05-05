@@ -47,40 +47,43 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         //Slide menu setup
         
-        let currentInstallation = PFInstallation.currentInstallation()
-        var channels = currentInstallation.objectForKey("channels") as! [String]
-        
-        var contains = false
-        
-        let look = "channel\(appManager.user.objectId)"
-        for x in channels
+        if (registeredForPushNotification)
         {
-            if (x == look)
+            let currentInstallation = PFInstallation.currentInstallation()
+            var channels = currentInstallation.objectForKey("channels") as! [String]
+            
+            var contains = false
+            
+            let look = "channel\(appManager.user.objectId)"
+            for x in channels
             {
-                contains = true
+                if (x == look)
+                {
+                    contains = true
+                }
             }
-        }
-        if (!contains)
-        {
-            currentInstallation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
-            currentInstallation.saveInBackgroundWithBlock({ (success, error) -> Void in
-                if (!success)
-                {
-                    appManager.displayAlert(self, title: "Error", message: "Could not sign up user for notifications", completion: nil)
-                }
-                else
-                {
-                    appManager.displayAlert(self, title: "Success", message: "You are now signed up for notifications", completion: nil)
-                }
-            })
+            if (!contains)
+            {
+                currentInstallation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
+                currentInstallation.saveInBackgroundWithBlock({ (success, error) -> Void in
+                    if (!success)
+                    {
+                        appManager.displayAlert(self, title: "Error", message: "Could not sign up user for notifications", completion: nil)
+                    }
+                    else
+                    {
+                        appManager.displayAlert(self, title: "Success", message: "You are now signed up for notifications", completion: nil)
+                    }
+                })
+            }
         }
         
         loadUserData()
         loadProfilePicture()
     }
-
     
-
+    
+    
     
     //--Parse functions-----------------------------------------------------------------------------------------
     

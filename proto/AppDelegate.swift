@@ -22,6 +22,8 @@ struct PictureEntry{
     var date : NSDate
 }
 
+var registeredForPushNotification = false
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -83,6 +85,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if (!completion)
             {
                 println("Could not finish configuring push notificatoins")
+            }
+            else
+            {
+                registeredForPushNotification = true
             }
         }
     }
