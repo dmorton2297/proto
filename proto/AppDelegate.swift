@@ -15,10 +15,10 @@ import Parse
 //structure that represents a "picture entry" for the app
 struct PictureEntry{
     var image : UIImage
-    var name : String
+    var caption : String
     var location : CLLocation
     var pointWorth : Int
-    var locationName : String
+    var locality : String
     var date : NSDate
 }
 

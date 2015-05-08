@@ -47,7 +47,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
         //Slide menu setup
         
-        if (registeredForPushNotification)
+        if (registeredForPushNotification )
         {
             let currentInstallation = PFInstallation.currentInstallation()
             var channels = currentInstallation.objectForKey("channels") as! [String]
@@ -90,177 +90,104 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     //this method saves posts to the current users data object
     func savePost(entry:PictureEntry)
     {
-        var query = PFQuery(className:"UserData")
-        var dat:PFObject!
-        if (appManager.user != nil)
-        {
-            var dataID = appManager.user.objectForKey("dataID") as! String
-            query.getObjectInBackgroundWithId(dataID, block: { (dat, error) -> Void in
-                self.finishSavingPost(dat, entry: entry)
-            })
-            println("this was not the issue")
+        var object = PFObject(className: "ImagePost")
+        
+        var imageFile = appManager.convertUIImageToPFFile(entry.image)
+        
+        object["image"] = imageFile
+        object["caption"] = entry.caption
+        object["likes"] = [NSObject]()
+        object["coordinates"] = ("\(entry.location.coordinate.latitude), \(entry.location.coordinate.longitude)")
+        object["date"] = NSDate()
+        object["point_worth"] = entry.pointWorth
+        
+        object.saveInBackgroundWithBlock { (completion, error) -> Void in
             
+            if (error != nil)
+            {
+                appManager.displayAlert(self, title: "Error", message: "Could not save post", completion: nil)
+            }
+            else
+            {
+                self.finishSavingPost(object.objectId)
+            }
         }
+        
+        
         
     }
     
-    func finishSavingPost(dataObject:PFObject?, entry:PictureEntry)
+    func finishSavingPost(objectId:String)
     {
-        if (dataObject != nil)
-        {
-            var locationsNames:[NSObject] = dataObject?.objectForKey("location_names") as! [NSObject]
-            var locationsCoordinates:[NSObject] = dataObject?.objectForKey("location_coordinates") as! [NSObject]
-            var pointWorths: [NSObject] = dataObject?.objectForKey("point_worth") as! [NSObject]
-            var images:[NSObject] = dataObject?.objectForKey("images") as! [PFFile]
-            var dates:[NSDate] = dataObject?.objectForKey("dates") as! [NSDate]
-            //check if the size of the arrays are more that 15
-            if (locationsNames.count == 15)
+        var imagePosts = appManager.user["image_posts"] as! [NSObject]
+        imagePosts.append(objectId)
+        appManager.user["image_posts"] = imagePosts
+        appManager.user.saveInBackgroundWithBlock { (completion, error) -> Void in
+            if (error != nil)
             {
-                //get rid of the fifteenth post
-                locationsNames.removeLast()
-                locationsCoordinates.removeLast()
-                images.removeLast()
+                appManager.displayAlert(self, title: "Error", message: "Could not save post. ", completion: nil)
+                
             }
-            
-            //convert image to a saveable pffile before upload
-            var imageFile:PFFile = appManager.convertUIImageToPFFile(entry.image)
-            //get rest of info for post
-            var pointWorth = entry.pointWorth
-            var locationName = entry.name
-            var locationCoordinates = "\(entry.location.coordinate.latitude), \(entry.location.coordinate.longitude)"
-            
-            //add new information to the array
-            locationsNames.insert(locationName, atIndex: 0)
-            locationsCoordinates.insert(locationCoordinates, atIndex: 0)
-            pointWorths.insert(pointWorth, atIndex: 0)
-            images.insert(imageFile, atIndex: 0)
-            dates.insert(NSDate(), atIndex: 0)
-            var newObject = dataObject!
-            
-            //create the new object to save
-            newObject["location_names"] = locationsNames
-            newObject["location_coordinates"] = locationsCoordinates
-            newObject["point_worth"] = pointWorths
-            newObject["images"] = images
-            newObject["dates"] = dates
-            //save the new object
-            newObject.saveInBackgroundWithBlock({ (test, error) -> Void in
-                if (!test)
-                {
-                    appManager.displayAlert(self, title: "Error", message: "Could not save image", completion: nil)
-                }
-                else
-                {
-                    let geo = CLGeocoder()
-                    
-                    geo.reverseGeocodeLocation(self.getLocationFromString(locationCoordinates), completionHandler: { (results, error) -> Void in
-                        if (error != nil)
-                        {
-                            appManager.displayAlert(self, title: "Error", message: "Uncable to finish saving post", completion: nil)
-                        }
-                        else
-                        {
-                            if (results.count > 0)
-                            {
-                                println("This ran")
-                                self.data[0].locationName = results[0].locality
-                                self.postsTableView.reloadData()
-                            }
-                        }
-                    })
-                    appManager.displayAlert(self, title: "Success", message: "Your image was successfully uploaded.", completion: nil)
-                }
-            })
         }
-        else
-        {
-            appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
-            
-        }
-        
     }
+    
+    
+    
     
     
     //this method will get all of the users data and load it into the poststableview
     func loadUserData()
     {
-        //retrieve the users posts information
-        var query = PFQuery(className:"UserData")
-        var dat:PFObject!
-        if (appManager.user == nil){return}
-        var dataID = appManager.user.objectForKey("dataID") as! NSString
-        query.getObjectInBackgroundWithId(dataID as String, block: { (dat, error) -> Void in
-            
-            //this following block will load if the query was successful.
-            if (error == nil)
-            {
-                //retrieve all of the users present information
-                var locationsNames:[NSObject] = dat?.objectForKey("location_names") as! [NSObject]
-                var locationsCoordinates:[NSObject] = dat?.objectForKey("location_coordinates")as! [NSObject]
-                var pointWorths: [NSObject] = dat?.objectForKey("point_worth")as! [NSObject]
-                var images:[NSObject] = dat?.objectForKey("images")as! [PFFile]
-                var dates:[NSDate] = dat?.objectForKey("dates") as! [NSDate]
-                //set the profile picture thumbnail
-                
-                //append the new post to the existing information
-                if (locationsNames.isEmpty)
+        var data = appManager.user.objectForKey("image_posts") as! [NSString]
+        var unsortedArray = [(PictureEntry, Int)]()
+        
+        var completionCounter = 0
+        for (var i = 0; i < data.count; i++)
+        {
+            println("This ran 1")
+            var query = PFQuery(className: "ImagePost")
+            var object = data[i] as! String
+            var tempIndex = i
+            query.getObjectInBackgroundWithId(object, block: { (object, error) -> Void in
+                if (error == nil)
                 {
-                    self.activityIndicator.stopAnimating()
-                    self.activityIndicator.hidden = true
-                    return
-                }
-                
-                //preload entry data with empty spaces, so we can avoid index out of bounds
-                //all of these values will change
-                
-                var unsortedPosts = [(PictureEntry, Int)]()
-                for (var i = 0; i < locationsNames.count; i++)
-                {
-                    let imageFile = images[i]as! PFFile
-                    var temp = i
-                    imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
-                        let name = locationsNames[temp]as! String
-                        let pointWorth = pointWorths[temp]as! NSInteger
-                        
-                        var t = locationsCoordinates[temp] as! String
-                        
-                        let location = self.getLocationFromString(t)
-                        var image = UIImage(data: data)
-                        
-                        var date = dates[temp]
-                        if (image == nil){image = UIImage(named: "friendsIcon")}
-                        
-                        let geocoder = CLGeocoder()
-                        
-                        geocoder.reverseGeocodeLocation(location, completionHandler: { (results, error) -> Void in
-                            if (error == nil)
+                    let geocoder = CLGeocoder()
+                    
+                    var imageFile = object.objectForKey("image") as! PFFile
+                    var caption = object.objectForKey("caption") as! String
+                    var likes = object.objectForKey("likes") as! NSObject
+                    var coordinatesString = object.objectForKey("coordinates") as! String
+                    var date = object.objectForKey("date") as! NSDate
+                    var pointWorth = object.objectForKey("point_worth") as! Int
+                    
+                    var coordinates = self.getLocationFromString(coordinatesString)
+                    
+                    imageFile.getDataInBackgroundWithBlock { (picture, error) -> Void in
+                        geocoder.reverseGeocodeLocation(coordinates, completionHandler: { (results, error) -> Void in
+                            if (error == nil && results != nil)
                             {
-                                var locName = "Location Name"
-                                if (results.count > 0)
+                                if (results.count >= 0)
                                 {
-                                    var result = results[0] as! CLPlacemark
-                                    
-                                    locName = result.locality
-                                }
-                                
-                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date: date)
-                                unsortedPosts.append((entry, temp))
-                                
-                                if (unsortedPosts.count == locationsNames.count)
-                                {
-                                    self.sortInfoIntoTableView(unsortedPosts)
+                                    let placemark = results[0] as! CLPlacemark
+                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date)
+                                    unsortedArray.append((entry, tempIndex))
+                                    completionCounter++
+                                    if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}
                                 }
                             }
+                            else
+                            {
+                                println(error)
+                            }
                         })
-                    })
+                    }
                 }
-            }
-            else
-            {
-                appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
-            }
-            
-        })
+                else
+                {
+                    println(error)
+                }
+            })
+        }
     }
     
     func getLocationFromString(str:String) -> CLLocation
@@ -299,6 +226,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         {
             for y in dat
             {
+                println("Woots")
+                println("\(y.1) \(i)")
                 if (y.1 == i)
                 {
                     data.append(y.0)
@@ -324,51 +253,35 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     
     //function to remove a data entry from this user
-    func deletePost(atIndex:Int)
+    func deletePost(atIndexPath:NSIndexPath)
     {
-        //retrieve the users posts information
-        var query = PFQuery(className:"UserData")
-        var dat:PFObject!
-        if (appManager.user == nil){return}
-        var dataID = appManager.user.objectForKey("dataID") as! NSString
-        query.getObjectInBackgroundWithId(dataID as String, block: { (data, error) -> Void in
-            
-            //this following block will load if the query was successful.
+        var userPosts = appManager.user.objectForKey("image_posts") as! [NSString]
+        var objectId = userPosts.removeAtIndex(atIndexPath.row)
+        appManager.user["image_posts"] = userPosts
+        appManager.user.saveInBackgroundWithBlock { (completion, error) -> Void in
             if (error == nil)
             {
-                var locationsNames:[NSObject] = data?.objectForKey("location_names") as! [NSObject]
-                var locationsCoordinates:[NSObject] = data?.objectForKey("location_coordinates")as! [NSObject]
-                var pointWorths: [NSObject] = data?.objectForKey("point_worth")as! [NSObject]
-                var images:[NSObject] = data?.objectForKey("images")as! [PFFile]
-                
-                locationsNames.removeAtIndex(atIndex)
-                locationsCoordinates.removeAtIndex(atIndex)
-                pointWorths.removeAtIndex(atIndex)
-                images.removeAtIndex(atIndex)
-                
-                var newObject = data
-                
-                //create the new object to save
-                newObject["location_names"] = locationsNames
-                newObject["location_coordinates"] = locationsCoordinates
-                newObject["point_worth"] = pointWorths
-                newObject["images"] = images
-                //save the new object
-                newObject.saveInBackgroundWithBlock({ (test, error) -> Void in
-                    if (!test)
+                var query = PFQuery(className: "ImagePost")
+                query.getObjectInBackgroundWithId(objectId as! String, block: { (obj, error) -> Void in
+                    if (error == nil)
                     {
-                        appManager.displayAlert(self, title: "Error", message: "Could not save image", completion: nil)
-                    }
-                    else
-                    {
-                        appManager.displayAlert(self, title: "Success", message: "Your image was successfully deleted.", completion: nil)
+                        var a = obj
+                        a.deleteInBackgroundWithBlock { (completion, error) -> Void in
+                            if (error != nil)
+                            {
+                                appManager.displayAlert(self, title: "Error", message: "Post could not be deleted.", completion: nil)
+                            }
+                            else
+                            {
+                                self.data.removeAtIndex(atIndexPath.row)
+                                self.postsTableView.deleteRowsAtIndexPaths([atIndexPath], withRowAnimation: UITableViewRowAnimation.Bottom)
+                                self.postsTableView.reloadData()
+                            }
+                        }
                     }
                 })
-                
-                
             }
-        })
-        
+        }
     }
     
     
@@ -381,10 +294,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //creating a cell
         var cell = tableView.dequeueReusableCellWithIdentifier("recentLocCell")as! PictureEntryTableViewCell
         //setting the title text label to
-        cell.locationTextLabel.text = data[indexPath.row].name
+        cell.locationTextLabel.text = data[indexPath.row].caption
         
         
-        cell.coordinatesTextLabel.text = "\(data[indexPath.row].locationName) \(toStringOfAbbrevMonthDayAndTime(data[indexPath.row].date))"
+        cell.coordinatesTextLabel.text = "\(data[indexPath.row].locality) \(toStringOfAbbrevMonthDayAndTime(data[indexPath.row].date))"
         
         //setting the image thumbnail in the cell
         cell.selfieImageView.clipsToBounds = true
@@ -427,10 +340,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         //Configure these cells to have a swipe to delete
         if (editingStyle == UITableViewCellEditingStyle.Delete)
         {
-            data.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Bottom)
-            deletePost(indexPath.row)
-            tableView.reloadData()
+            deletePost(indexPath)
         }
     }
     
@@ -460,7 +370,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
                 println(location.coordinate.latitude as Double)
-                var entry = PictureEntry(image: image, name: info, location: location, pointWorth: 10, locationName: "temp", date:NSDate())
+                var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savePost(entry)

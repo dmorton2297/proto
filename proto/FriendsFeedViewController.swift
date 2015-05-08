@@ -10,7 +10,7 @@ import UIKit
 import Parse
 
 class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+    
     @IBOutlet weak var entryTableView: UITableView!//Connection to the main tableview in xcode
     @IBOutlet weak var profilePicture: UIImageView! //connection to the profile pictur imageview in storyboard
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!//connection to the activity indicator in storyboard
@@ -43,10 +43,10 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         {
             var cell = tableView.dequeueReusableCellWithIdentifier("recentLocCell") as! PictureEntryTableViewCell
             
-            cell.locationTextLabel.text = data[indexPath.row].name
+            cell.locationTextLabel.text = data[indexPath.row].caption
             
             //getting coorinates of this specific picture entry
-            cell.coordinatesTextLabel.text = data[indexPath.row].locationName
+            cell.coordinatesTextLabel.text = data[indexPath.row].locality
             
             //setting the image thumbnail in the cell
             cell.selfieImageView.clipsToBounds = true
@@ -56,7 +56,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
             
             
             return cell
-
+            
         }
         
         return UITableViewCell()
@@ -80,74 +80,56 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     
     func loadTableViewData()
     {
-        var query = PFQuery(className: "UserData")
-        var dataID = user.objectForKey("dataID") as! String
-        query.getObjectInBackgroundWithId(dataID, block: { (dat, error) -> Void in
-            if (error == nil)
-            {
-                var locationNames = dat.objectForKey("location_names") as! [String]
-                var locationCoordinates = dat.objectForKey("location_coordinates") as! [String]
-                var pointWorths = dat.objectForKey("point_worth") as! [NSObject]
-                var imageFiles = dat.objectForKey("images") as! [PFFile]
-                var dates = dat.objectForKey("dates") as! [NSDate]
-                
-                
-                if (locationNames.count == 0)
+        var data = user.objectForKey("image_posts") as! [NSString]
+        var unsortedArray = [(PictureEntry, Int)]()
+        
+        var completionCounter = 0
+        for (var i = 0; i < data.count; i++)
+        {
+            println("This ran 1")
+            var query = PFQuery(className: "ImagePost")
+            var object = data[i] as! String
+            var tempIndex = i
+            query.getObjectInBackgroundWithId(object, block: { (object, error) -> Void in
+                if (error == nil)
                 {
-                    self.activityIndicator.stopAnimating()
-                    self.activityIndicator.hidden = true
-                    return
-                }
-                
-                var unsortedPosts = [(PictureEntry, Int)]()
-                for (var i = 0; i < locationNames.count; i++)
-                {
-                    let imageFile = imageFiles[i]
-                    var temp = i
-                    imageFile.getDataInBackgroundWithBlock({ (data, error) -> Void in
-                        let name = locationNames[temp]
-                        let pointWorth = pointWorths[temp]as! NSInteger
-                        
-                        var t = locationCoordinates[temp]
-                        
-                        let location = self.getLocationFromString(t)
-                        var image = UIImage(data: data)
-                        
-                        var date = dates[temp]
-                        if (image == nil){image = UIImage(named: "friendsIcon")}
-                        
-                        let geocoder = CLGeocoder()
-                        
-                        geocoder.reverseGeocodeLocation(location, completionHandler: { (results, error) -> Void in
-                            if (error == nil)
+                    let geocoder = CLGeocoder()
+                    
+                    var imageFile = object.objectForKey("image") as! PFFile
+                    var caption = object.objectForKey("caption") as! String
+                    var likes = object.objectForKey("likes") as! NSObject
+                    var coordinatesString = object.objectForKey("coordinates") as! String
+                    var date = object.objectForKey("date") as! NSDate
+                    var pointWorth = object.objectForKey("point_worth") as! Int
+                    
+                    var coordinates = self.getLocationFromString(coordinatesString)
+                    
+                    imageFile.getDataInBackgroundWithBlock { (picture, error) -> Void in
+                        geocoder.reverseGeocodeLocation(coordinates, completionHandler: { (results, error) -> Void in
+                            if (error == nil && results != nil)
                             {
-                                var locName = "Location Name"
-                                if (results.count > 0)
+                                if (results.count >= 0)
                                 {
-                                    var result = results[0] as! CLPlacemark
-                                    
-                                    locName = result.name
-                                }
-                                
-                                
-                                let entry = PictureEntry(image: image!, name: name, location: location, pointWorth: pointWorth, locationName: locName, date:date)
-                                unsortedPosts.append((entry, temp))
-                                
-                                if (unsortedPosts.count == locationNames.count)
-                                {
-                                    self.sortInfoIntoTableView(unsortedPosts)
+                                    let placemark = results[0] as! CLPlacemark
+                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date)
+                                    unsortedArray.append((entry, tempIndex))
+                                    completionCounter++
+                                    if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}
                                 }
                             }
+                            else
+                            {
+                                println(error)
+                            }
                         })
-                    })
+                    }
                 }
-            }
-            else
-            {
-                appManager.displayAlert(self, title: "Error", message: "Could not load data", completion: nil)
-            }
-            
-        })
+                else
+                {
+                    println(error)
+                }
+            })
+        }
     }
     
     func getLocationFromString(str:String) -> CLLocation
@@ -179,8 +161,8 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         
         return CLLocation(latitude: lat, longitude: long)
     }
-
-
+    
+    
     
     
     func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
@@ -211,8 +193,8 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
             self.profilePicture.image = image
         }
     }
-
-
+    
+    
     
     
     
