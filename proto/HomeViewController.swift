@@ -120,7 +120,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     func finishSavingPost(objectId:String)
     {
         var imagePosts = appManager.user["image_posts"] as! [NSObject]
-        imagePosts.append(objectId)
+        imagePosts.insert(objectId, atIndex: 0)
         appManager.user["image_posts"] = imagePosts
         appManager.user.saveInBackgroundWithBlock { (completion, error) -> Void in
             if (error != nil)
