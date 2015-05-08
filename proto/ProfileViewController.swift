@@ -35,7 +35,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         loadProfilePicture()
         
-        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        loadProfilePicture()
     }
     
     

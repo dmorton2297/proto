@@ -44,6 +44,7 @@ class EditPictureViewController: UIViewController {
     //action that will run when the user presses the "done" button
     @IBAction func done(sender: AnyObject)
     {
+        println("This ran")
         saveImage()
     }
     
