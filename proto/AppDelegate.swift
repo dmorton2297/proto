@@ -33,13 +33,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
+        //appManager.dataStoreExists()
+        
         var navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.barTintColor = UIColor.lightGrayColor()
-
+        
         
         //Parse configurations
         Parse.enableLocalDatastore()
         Parse.setApplicationId("3PKEj3J4aZhGZgbuCY2GkPTBXV7DJoeLu1MZRJVd", clientKey: "FEiU0q77D0fCxOSwG06USU0ew39kDZ9YcYJxb6h2")
+        
+        
+        var query = PFQuery(className: "FriendsInfo")
+        query.fromLocalDatastore()
+        query.whereKey("Name", equalTo:"fInfo")
+        query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
+            if (error == nil && object != nil)
+            {
+                println("Data store exists")
+            }
+            else
+            {
+                appManager.createDataStore()
+            }
+        }
+        
         
         // Register for Push Notitications
         if application.applicationState != UIApplicationState.Background
@@ -67,10 +85,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         else
         {
-           // let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
+            // let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
             let types = UIUserNotificationType.Badge | UIUserNotificationType.Sound | UIUserNotificationType.Alert
             let settings = UIUserNotificationSettings(forTypes: types, categories: nil)
-           application.registerUserNotificationSettings(settings)
+            application.registerUserNotificationSettings(settings)
         }
         return true
     }
@@ -79,16 +97,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         let installation = PFInstallation.currentInstallation()
         installation.setDeviceTokenFromData(deviceToken)
-        installation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
-
-        installation.saveInBackgroundWithBlock { (completion, error) -> Void in
-            if (!completion)
-            {
-                println("Could not finish configuring push notificatoins")
-            }
-            else
-            {
-                registeredForPushNotification = true
+        println(deviceToken)
+        if (installation != nil && appManager.user != nil)
+        {
+            installation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
+            
+            installation.saveInBackgroundWithBlock { (completion, error) -> Void in
+                if (!completion)
+                {
+                    println("Could not finish configuring push notificatoins")
+                }
+                else
+                {
+                    registeredForPushNotification = true
+                }
             }
         }
     }

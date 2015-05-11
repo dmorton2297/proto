@@ -74,6 +74,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
+    
     //will fire when "signUpButton" is pressed
     //This method will sign up user with parse.
     @IBAction func signUpButtonPressed(sender: AnyObject)

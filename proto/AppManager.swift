@@ -20,6 +20,7 @@ class AppManager
 {
     var user:PFUser! = nil
     var locationManager : CLLocationManager!
+    var dataStoreId = ""
     
     init()
     {
@@ -91,5 +92,25 @@ class AppManager
         }
         return image!
     }
+    
+    
+    func createDataStore()
+    {
+        var dict = [NSObject: AnyObject]()
+        
+        
+        var friendsDictionary = PFObject(className: "FriendsInfo", dictionary: dict)
+        friendsDictionary["Name"] = "fInfo"
+        
+        friendsDictionary.pinInBackgroundWithBlock { (completion, error) -> Void in
+            if (error == nil)
+            {
+
+                println("data store created successfully.")
+            }
+        }
+    }
+    
+    
     
 }

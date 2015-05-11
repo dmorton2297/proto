@@ -17,16 +17,19 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     @IBOutlet weak var friendsTableView: UITableView!
     var data = [PFUser]()
+    var updateTimes = [NSDate]() //Parallel array to te data array. This is used to notify when a friend has uploaded a new image.
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
         //menu setup----------------
-
+    }
+    
+    override func viewDidAppear(animated: Bool)
+    {
         
         self.loadTableViewData()
-
     }
     
     //IBActions from storyboard-------------------
@@ -40,6 +43,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
+        if (updateTimes.count != data.count){println("Parallel arrays are error")}
+        
         if (!data.isEmpty)
         {
             var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "b")
@@ -52,6 +57,33 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.imageView?.layer.cornerRadius = 30
             
             cell.backgroundColor = UIColor.clearColor()
+            
+            cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+            //check the local data store for the last time this user viewed this friend
+            var query = PFQuery(className: "FriendsInfo")
+            query.fromLocalDatastore()
+            query.whereKey("Name", equalTo: "fInfo")
+            query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
+                if (error == nil && object != nil)
+                {
+                    var check = object[self.data[indexPath.row].username] as?
+                    NSObject
+                    if (check == nil)
+                    {
+                        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                    }
+                    else
+                    {
+                        var date = check as! NSDate
+                        if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
+                        {
+                            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                        }
+                    }
+                }
+            }
+
+            
             return cell
         }
         return UITableViewCell()
@@ -64,8 +96,29 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
+        //add the current time to the local data store
+        var query = PFQuery(className: "FriendsInfo")
+        query.fromLocalDatastore()
+        query.whereKey("Name", equalTo: "fInfo")
+        query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
+            if (error == nil && object != nil)
+            {
+                var newObject = object
+                println(indexPath.row)
+                newObject[self.data[indexPath.row].username] = NSDate()
+                newObject.pinInBackgroundWithBlock({ (completion, error) -> Void in
+                    if (completion)
+                    {
+                        println("new date recorded.")
+                    }
+                    
+                })
+            }
+        }
+        
         self.performSegueWithIdentifier("showFriendsFeed", sender: self)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
     }
     //Parse methods--------------------------------------------------------------------------------------------
     
@@ -103,11 +156,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             else
             {
+                self.data.removeAll(keepCapacity: false)
                 self.data = d as! [PFUser]
                 self.loadUsersPhotos()
             }
         }
     }
+    
     
     func loadUsersPhotos()
     {
@@ -142,6 +197,18 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
         
+        loadUpdateDates()
+    }
+    
+    func loadUpdateDates()
+    {
+        updateTimes.removeAll(keepCapacity: false)
+        for (var i = 0; i < data.count; i++)
+        {
+            var x = data[i]
+            updateTimes.append(x.updatedAt)
+        }
+        
         friendsTableView.reloadData()
     }
     
@@ -151,6 +218,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         if (segue.identifier == "showFriendsFeed")
         {
             var dvc = segue.destinationViewController as! FriendsFeedViewController
+            
+            println("CHECK \(friendsTableView.indexPathForSelectedRow()!.row) and size of array = \(data.count)")
             dvc.user = data[friendsTableView.indexPathForSelectedRow()!.row]
         }
     }
