@@ -499,6 +499,7 @@
                         <outlet property="entryTableView" destination="ojP-k1-HgR" id="B3W-BG-mFW"/>
                         <outlet property="profilePicture" destination="vKH-mf-N1d" id="ekh-9V-3Gs"/>
                         <outlet property="userLabel" destination="0NR-Kr-Hb2" id="Fl5-9y-QaP"/>
+                        <segue destination="BcT-YM-HU5" kind="show" identifier="detail2" id="TTT-jR-mxX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ntN-id-t1G" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -514,10 +515,10 @@
                         <viewControllerLayoutGuide type="bottom" id="J11-0y-T5P"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fWs-4W-VLK">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
                             </mapView>
                         </subviews>
@@ -536,7 +537,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Nx-B2-ygD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3180" y="-144"/>
+            <point key="canvasLocation" x="4004" y="117"/>
         </scene>
         <!--Search by Username-->
         <scene sceneID="FJ2-Bo-1Wg">
@@ -1096,6 +1097,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Vwk-ep-guk"/>
+        <segue reference="TTT-jR-mxX"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
 </document>

@@ -73,7 +73,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        self.performSegueWithIdentifier("detail2", sender: self)
     }
     
     //Parse functions-------------------------------------------------------------------------------------------------------------------------------
@@ -194,7 +194,13 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         }
     }
     
-    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var dvc = segue.destinationViewController as! PostDetailViewController
+        dvc.location = data[entryTableView.indexPathForSelectedRow()!.row].location
+        
+        entryTableView.deselectRowAtIndexPath(entryTableView.indexPathForSelectedRow()!, animated: true)
+        
+    }
     
     
     
