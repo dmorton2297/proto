@@ -206,7 +206,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         for (var i = 0; i < data.count; i++)
         {
             var x = data[i]
-            updateTimes.append(x.updatedAt)
+            var date = x.objectForKey("lastPostedTime") as! NSDate
+            updateTimes.append(date)
         }
         
         friendsTableView.reloadData()

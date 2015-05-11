@@ -139,7 +139,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
             user["dataID"] = userdata.objectId
             user["friendsDataID"] = friends.objectId
             user["image_posts"] = [NSString]()
-            
+            user["lastPostedTime"] = NSDate()
             var defaultImage = UIImage(named: "profilePicturePlaceholder")
             var defImageFile = appManager.convertUIImageToPFFile(defaultImage!)
             

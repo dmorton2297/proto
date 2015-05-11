@@ -122,6 +122,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var imagePosts = appManager.user["image_posts"] as! [NSObject]
         imagePosts.insert(objectId, atIndex: 0)
         appManager.user["image_posts"] = imagePosts
+        appManager.user["lastPostedTime"] = NSDate()
         appManager.user.saveInBackgroundWithBlock { (completion, error) -> Void in
             if (error != nil)
             {
