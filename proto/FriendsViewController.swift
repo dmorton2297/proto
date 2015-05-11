@@ -47,7 +47,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if (!data.isEmpty)
         {
-            var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "b")
+            var cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "b")
             
             var username = data[indexPath.row].username
             
@@ -70,14 +70,15 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     NSObject
                     if (check == nil)
                     {
-                        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                        cell.detailTextLabel?.text = "New Posts"
                     }
                     else
                     {
                         var date = check as! NSDate
                         if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
                         {
-                            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                            cell.detailTextLabel?.text = "New Posts"
+                            cell.detailTextLabel?.textColor = UIColor.blueColor()
                         }
                     }
                 }
