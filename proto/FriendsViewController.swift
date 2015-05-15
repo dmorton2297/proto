@@ -119,7 +119,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             {
                 var newObject = object
                 println(indexPath.row)
-                newObject[self.data[indexPath.row].0.username] = NSDate()
+                var username = self.tableViewData[indexPath.section]![indexPath.row].0.username
+                newObject[username] = NSDate()
                 newObject.pinInBackgroundWithBlock({ (completion, error) -> Void in
                     if (completion)
                     {
@@ -141,11 +142,15 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         if (editingStyle == UITableViewCellEditingStyle.Delete)
         {
             
-            var userFriendsID = appManager.user.objectForKey("friendsDataID") as! String
-            var toBeUnfriendedFriendsID = data[indexPath.row].0.objectForKey("friendsDataID") as! String
-            var toBeUnfriendedID = data[indexPath.row].0.objectId
+            var allUsers = self.tableViewData[indexPath.section]!
+            var selectedUser = allUsers[indexPath.row].0
             
-            self.data.removeAtIndex(indexPath.row)
+            var userFriendsID = appManager.user.objectForKey("friendsDataID") as! String
+            var toBeUnfriendedFriendsID = selectedUser.objectForKey("friendsDataID") as! String
+            var toBeUnfriendedID = selectedUser.objectId
+            
+          //  self.data.removeAtIndex(indexPath.row)
+            self.tableViewData[indexPath.section]?.removeAtIndex(indexPath.row)
             //self.images.removeAtIndex(indexPath.row)
             updateTimes.removeAtIndex(indexPath.row)
             self.friendsTableView.reloadData()
@@ -388,7 +393,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             var dvc = segue.destinationViewController as! FriendsFeedViewController
             
             //println("CHECK \(friendsTableView.indexPathForSelectedRow()!.row) and size of array = \(data.count)")
-            dvc.user = data[friendsTableView.indexPathForSelectedRow()!.row].0
+            var indexPath = friendsTableView.indexPathForSelectedRow()!
+            dvc.user = tableViewData[indexPath.section]![indexPath.row].0
         }
     }
 }
