@@ -84,7 +84,7 @@ class SlideMenu: UIView, UITableViewDelegate, UITableViewDataSource{
         
         if (indexPath.row == 0)
         {
-            var storyBoard = UIStoryboard(name: "Main", bundle: NSBundle.mainBundle())
+            var storyBoard = UIStoryboard(name: "Mainn", bundle: NSBundle.mainBundle())
             var a = storyBoard.instantiateViewControllerWithIdentifier("home") as! UINavigationController
             superViewController.presentViewController(a, animated: true, completion: nil)
             

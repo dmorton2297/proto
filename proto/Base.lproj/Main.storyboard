@@ -429,12 +429,45 @@
                                                             <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mxk-On-fY7">
+                                                            <rect key="frame" x="536" y="8" width="40" height="40"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="40" id="qCy-tD-fWB"/>
+                                                                <constraint firstAttribute="height" constant="40" id="y5N-ya-ZIj"/>
+                                                            </constraints>
+                                                            <state key="normal" image="likeButtonDisabled">
+                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="likeButtonPressed:" destination="BsQ-xW-vWU" eventType="touchUpInside" id="4Mb-xd-ESd"/>
+                                                            </connections>
+                                                        </button>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J99-D9-BXK">
+                                                            <rect key="frame" x="462" y="31" width="87" height="21"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="87" id="171-xa-X2L"/>
+                                                                <constraint firstAttribute="height" constant="21" id="DyJ-kW-zfv"/>
+                                                                <constraint firstAttribute="width" constant="25" id="nTu-yR-XhG"/>
+                                                            </constraints>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                            <variation key="default">
+                                                                <mask key="constraints">
+                                                                    <exclude reference="nTu-yR-XhG"/>
+                                                                </mask>
+                                                            </variation>
+                                                        </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="Mxk-On-fY7" secondAttribute="trailing" constant="8" id="Hw4-3r-LNP"/>
                                                         <constraint firstItem="uWj-7J-0eg" firstAttribute="top" secondItem="faQ-Nk-CWV" secondAttribute="top" constant="28" id="KNP-Tc-QRj"/>
+                                                        <constraint firstItem="Mxk-On-fY7" firstAttribute="leading" secondItem="J99-D9-BXK" secondAttribute="trailing" constant="-13" id="QP4-bW-pyM"/>
                                                         <constraint firstItem="rUr-aO-WPN" firstAttribute="top" secondItem="faQ-Nk-CWV" secondAttribute="top" constant="2" id="TD2-Sy-K3e"/>
                                                         <constraint firstAttribute="height" constant="59" id="WEH-LP-fIb"/>
+                                                        <constraint firstItem="Mxk-On-fY7" firstAttribute="top" secondItem="faQ-Nk-CWV" secondAttribute="top" constant="8" id="fCW-3H-nqC"/>
+                                                        <constraint firstAttribute="bottom" secondItem="J99-D9-BXK" secondAttribute="bottom" constant="7" id="o0b-gn-gjN"/>
                                                         <constraint firstItem="uWj-7J-0eg" firstAttribute="leading" secondItem="faQ-Nk-CWV" secondAttribute="leading" constant="8" id="yCL-Jf-k7M"/>
                                                         <constraint firstItem="rUr-aO-WPN" firstAttribute="leading" secondItem="faQ-Nk-CWV" secondAttribute="leading" constant="8" id="zyB-XF-CWA"/>
                                                     </constraints>
@@ -453,6 +486,8 @@
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.11" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <outlet property="coordinatesTextLabel" destination="uWj-7J-0eg" id="XFi-Q6-pkH"/>
+                                            <outlet property="likeButton" destination="Mxk-On-fY7" id="4sS-7m-tHx"/>
+                                            <outlet property="likeCountLabel" destination="J99-D9-BXK" id="Ctu-3f-4Ze"/>
                                             <outlet property="locationTextLabel" destination="rUr-aO-WPN" id="LwH-Ed-2fe"/>
                                             <outlet property="selfieImageView" destination="OyZ-Ql-o4L" id="v8F-6c-ewe"/>
                                         </connections>
@@ -518,8 +553,8 @@
                         <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="487"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
+                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                             </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1093,10 +1128,11 @@
         <image name="cameraroll" width="311" height="368"/>
         <image name="friendsIcon" width="42" height="42"/>
         <image name="homeIcon" width="42" height="42"/>
+        <image name="likeButtonDisabled" width="128" height="128"/>
         <image name="profilePicturePlaceholder" width="123" height="123"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="Vwk-ep-guk"/>
+        <segue reference="vAw-IC-d1c"/>
         <segue reference="TTT-jR-mxX"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>

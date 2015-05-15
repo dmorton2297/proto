@@ -156,7 +156,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     
                     var imageFile = object.objectForKey("image") as! PFFile
                     var caption = object.objectForKey("caption") as! String
-                    var likes = object.objectForKey("likes") as! NSObject
+                    var likes = object.objectForKey("likes") as! [String]
                     var coordinatesString = object.objectForKey("coordinates") as! String
                     var date = object.objectForKey("date") as! NSDate
                     var pointWorth = object.objectForKey("point_worth") as! Int
@@ -170,7 +170,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                                 if (results.count >= 0)
                                 {
                                     let placemark = results[0] as! CLPlacemark
-                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date)
+                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date, liked: false, likes: likes)
                                     unsortedArray.append((entry, tempIndex))
                                     completionCounter++
                                     if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}
@@ -371,7 +371,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
                 println(location.coordinate.latitude as Double)
-                var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate())
+                var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate(), liked: false, likes: [String]())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savePost(entry)
@@ -418,6 +418,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         
     }
     
+    
+    
     //date utility
     func toStringOfAbbrevMonthDayAndTime(date:NSDate) -> String
     {
@@ -426,6 +428,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         dateFormatter.dateFormat = "MMM d, hh:mm aa"
         return dateFormatter.stringFromDate(date)
     }
+    
+    
     
     
     

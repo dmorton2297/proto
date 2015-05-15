@@ -12,11 +12,12 @@ import Parse
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
 
-    
     var images = [UIImage]()
     
     @IBOutlet weak var friendsTableView: UITableView!
     var data = [PFUser]()
+    var tableViewData = Dictionary<String, [PFUser]>()
+    let sectionTitles = ["Recently Updated", "Friends"]
     var updateTimes = [NSDate]() //Parallel array to te data array. This is used to notify when a friend has uploaded a new image.
     
     override func viewDidLoad()
@@ -70,15 +71,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     NSObject
                     if (check == nil)
                     {
-                        cell.detailTextLabel?.text = "New Posts"
+                        cell.detailTextLabel?.text = "New"
+                        cell.detailTextLabel?.textColor = UIColor.redColor()
                     }
                     else
                     {
                         var date = check as! NSDate
                         if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
                         {
-                            cell.detailTextLabel?.text = "New Posts"
-                            cell.detailTextLabel?.textColor = UIColor.blueColor()
+                            cell.detailTextLabel?.text = "New"
+                            cell.detailTextLabel?.textColor = UIColor.redColor()
                         }
                     }
                 }
@@ -121,9 +123,116 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
     }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath)
+    {
+        
+        if (editingStyle == UITableViewCellEditingStyle.Delete)
+        {
+            
+            var userFriendsID = appManager.user.objectForKey("friendsDataID") as! String
+            var toBeUnfriendedFriendsID = data[indexPath.row].objectForKey("friendsDataID") as! String
+            var toBeUnfriendedID = data[indexPath.row].objectId
+            
+            self.data.removeAtIndex(indexPath.row)
+            self.images.removeAtIndex(indexPath.row)
+            updateTimes.removeAtIndex(indexPath.row)
+            self.friendsTableView.reloadData()
+            
+
+            var query = PFQuery(className: "FriendsObject")
+            query.getObjectInBackgroundWithId(userFriendsID, block: { (object, error) -> Void in
+                if (error == nil && object != nil)
+                {
+                    var friendsList = object.objectForKey("friends") as! [String]
+                    for (var i = 0; i < friendsList.count; i++)
+                    {
+                        var x = friendsList[i]
+                        if (x == toBeUnfriendedID)
+                        {
+                            var a = friendsList.removeAtIndex(i)
+                            
+                            println("removeing \(a)")
+                            var newObject = object
+                            newObject["friends"] = friendsList
+                            for x in friendsList
+                            {
+                                println(x)
+                            }
+                            newObject.saveInBackgroundWithBlock { (completion, error) -> Void in
+                                if (error == nil)
+                                {
+                                    println("We are good")
+                                    self.finishUnfriendingUser(toBeUnfriendedFriendsID, dataIndex: indexPath.row)
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                }
+                else
+                {
+                    appManager.displayAlert(self, title: "Error", message: "Could not unfriend user.", completion: nil)
+                }
+            })
+            
+        }
+    }
+
+    
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
+    {
+        return ""
+    }
+    
+    func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+        return "Unfriend"
+    }
     //Parse methods--------------------------------------------------------------------------------------------
     
-    
+    func finishUnfriendingUser(userFriendId: String, dataIndex: Int)
+    {
+        
+        println(userFriendId)
+        var query = PFQuery(className: "FriendsObject")
+        query.getObjectInBackgroundWithId(userFriendId, block: { (object, error) -> Void in
+            if (error == nil && object != nil)
+            {
+                println("we are good 2")
+                var friendsList = object.objectForKey("friends") as! [String]
+                for (var i = 0; i < friendsList.count; i++)
+                {
+                    var x = friendsList[i]
+                    if (x == appManager.user.objectId)
+                    {
+                        friendsList.removeAtIndex(i)
+                        var newObject = object
+                        newObject["friends"] = friendsList
+                        newObject.saveInBackgroundWithBlock { (completion, error) -> Void in
+                            appManager.displayAlert(self, title: "Success!", message: "User unfriended.", completion: nil)
+                            
+                        }
+                    }
+                }
+                
+                
+                
+                
+            }
+            else
+            {
+                appManager.displayAlert(self, title: "Error", message: "Could not unfriend user.", completion: nil)
+            }
+        })
+        
+    }
     //load all the users information into the 'data' array
     func loadTableViewData()
     {

@@ -13,6 +13,10 @@ class PictureEntryTableViewCell: UITableViewCell
     @IBOutlet weak var locationTextLabel: UILabel!
     @IBOutlet weak var coordinatesTextLabel: UILabel!
     @IBOutlet weak var selfieImageView: UIImageView!
+    @IBOutlet weak var likeButton: UIButton!
+    @IBOutlet weak var likeCountLabel: UILabel!
+    
+    
     
     override func awakeFromNib()
     {
@@ -20,4 +24,6 @@ class PictureEntryTableViewCell: UITableViewCell
         selfieImageView.contentMode = UIViewContentMode.ScaleAspectFill
         // Initialization code
     }
+    
+
 }

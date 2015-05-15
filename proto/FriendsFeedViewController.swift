@@ -9,7 +9,7 @@
 import UIKit
 import Parse
 
-class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITableViewDelegate{
     
     @IBOutlet weak var entryTableView: UITableView!//Connection to the main tableview in xcode
     @IBOutlet weak var profilePicture: UIImageView! //connection to the profile pictur imageview in storyboard
@@ -17,8 +17,8 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet weak var userLabel: UILabel! //connection to the users label in storyboard
     
     var user : PFUser! //this will be passed over in a prepare for segueMethod in FriendsViewController. The owner of the feed were looking at
-    
-    var data = [PictureEntry]()
+    var data = [PictureEntry]() //contains all the data to the table view
+    var likes = [Bool]() //parallel array to data to check if you liked that post
     
     override func viewDidLoad()
     {
@@ -54,6 +54,20 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
             cell.selfieImageView.layer.cornerRadius = 5
             cell.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, entryTableView.frame.width, 100)
             
+            cell.likeButton.tag = indexPath.row
+            
+            if (data[indexPath.row].liked)
+            {
+                cell.likeButton.setImage(UIImage(named: "likeButtonEnabled"), forState: UIControlState.Normal)
+            }
+            else
+            {
+                cell.likeButton.setImage(UIImage(named: "likeButtonDisabled"), forState: UIControlState.Normal)
+            }
+            
+            cell.likeCountLabel.text = "\(data[indexPath.row].likes.count)"
+            
+            
             
             return cell
             
@@ -76,6 +90,83 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         self.performSegueWithIdentifier("detail2", sender: self)
     }
     
+    @IBAction func likeButtonPressed(sender: UIButton)
+    {
+        var unliking = false //boolean flag used to check if the post is being liked or unliked.
+        
+        if (sender.imageForState(UIControlState.Normal) == UIImage(named: "likeButtonEnabled"))
+        {
+            self.data[sender.tag].liked = false
+            for (var i = 0; i < self.data[sender.tag].likes.count; i++)
+            {
+                var x = self.data[sender.tag].likes[i]
+                if (x == appManager.user.objectId)
+                {
+                    self.data[sender.tag].likes.removeAtIndex(i)
+                }
+            }
+            unliking = true
+        }
+        else
+        {
+            self.data[sender.tag].liked = true
+            self.data[sender.tag].likes.append(appManager.user.objectId)
+        }
+        entryTableView.reloadData()
+        var entry = data[sender.tag] //this will get the data that the user just "liked"
+        let posts = user.objectForKey("image_posts") as! [String]
+        
+        if (sender.tag > posts.count){return} //check to see if there is a data entry at that point
+        
+        
+        var postID = posts[sender.tag]
+        
+        let query = PFQuery(className: "ImagePost")
+        query.getObjectInBackgroundWithId(postID, block: { (object, error) -> Void in
+            if (error == nil && object != nil)
+            {
+                var likes = object.objectForKey("likes") as! [String]
+                var newObject = object
+                if (!unliking)
+                {
+                    likes.append(appManager.user.objectId)
+                    self.data[sender.tag].liked = true
+                    
+                }
+                else
+                {
+                    for (var i = 0; i < likes.count; i++)
+                    {
+                        if (likes[i] == appManager.user.objectId)
+                        {
+                            likes.removeAtIndex(i)
+                        }
+                        self.data[sender.tag].liked = false
+                    }
+                }
+                
+                
+                newObject["likes"] = likes
+                newObject.saveInBackgroundWithBlock { (completion, error) -> Void in
+                    if (error != nil)
+                    {
+                        appManager.displayAlert(self, title: "Error", message: "Could not like image.", completion: nil)
+                        sender.setImage(UIImage(named: "likeButtonDisabled"), forState: UIControlState.Normal)
+                    }
+                }
+                
+                
+            }
+            else
+            {
+                appManager.displayAlert(self, title: "Error", message: "Could not like image.", completion: nil)
+                sender.setImage(UIImage(named: "likeButtonDisabled"), forState: UIControlState.Normal)
+            }
+        })
+        
+    }
+    
+    
     //Parse functions-------------------------------------------------------------------------------------------------------------------------------
     
     func loadTableViewData()
@@ -95,14 +186,24 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                 {
                     let geocoder = CLGeocoder()
                     
+                    //load all the information into the data array
                     var imageFile = object.objectForKey("image") as! PFFile
                     var caption = object.objectForKey("caption") as! String
-                    var likes = object.objectForKey("likes") as! NSObject
+                    var likes = object.objectForKey("likes") as! [String]
                     var coordinatesString = object.objectForKey("coordinates") as! String
                     var date = object.objectForKey("date") as! NSDate
                     var pointWorth = object.objectForKey("point_worth") as! Int
-                    
                     var coordinates = self.getLocationFromString(coordinatesString)
+                    var liked = false
+                    //check to see if you liked this image
+                    
+                    for x in likes
+                    {
+                        if (x == appManager.user.objectId)
+                        {
+                            liked = true
+                        }
+                    }
                     
                     imageFile.getDataInBackgroundWithBlock { (picture, error) -> Void in
                         geocoder.reverseGeocodeLocation(coordinates, completionHandler: { (results, error) -> Void in
@@ -111,7 +212,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                                 if (results.count >= 0)
                                 {
                                     let placemark = results[0] as! CLPlacemark
-                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date)
+                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date, liked: liked, likes: likes)
                                     unsortedArray.append((entry, tempIndex))
                                     completionCounter++
                                     if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}

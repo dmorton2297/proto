@@ -20,6 +20,8 @@ struct PictureEntry{
     var pointWorth : Int
     var locality : String
     var date : NSDate
+    var liked : Bool
+    var likes : [String]
 }
 
 var registeredForPushNotification = false
