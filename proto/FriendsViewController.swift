@@ -15,15 +15,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var images = [UIImage]()
     
     @IBOutlet weak var friendsTableView: UITableView!
-    var data = [PFUser]()
-    var tableViewData = Dictionary<String, [PFUser]>()
+    var userArray = [PFUser]()
+    var data = [(PFUser, UIImage)]()
+    var tableViewData = Dictionary<Int, [(PFUser, UIImage)]>()
     let sectionTitles = ["Recently Updated", "Friends"]
+    var sections = ["Recently Updated", "Friends"]
     var updateTimes = [NSDate]() //Parallel array to te data array. This is used to notify when a friend has uploaded a new image.
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
         //menu setup----------------
     }
     
@@ -39,7 +40,15 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return data.count
+        //return tableViewData["\(section)"]!.count
+        if (tableViewData.isEmpty)
+        {
+            return 1
+        }
+        else
+        {
+            return tableViewData[section]!.count
+        }
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -48,12 +57,14 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if (!data.isEmpty)
         {
+            var dat = tableViewData[indexPath.section]!
             var cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "b")
-            
-            var username = data[indexPath.row].username
+            var user = dat[indexPath.row].0
+            var image = dat[indexPath.row].1
+            var username = user.username
             
             cell.textLabel?.text = username
-            cell.imageView?.image = images[indexPath.row]
+            cell.imageView?.image = image
             cell.imageView?.clipsToBounds = true
             cell.imageView?.layer.cornerRadius = 30
             
@@ -61,30 +72,30 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
             //check the local data store for the last time this user viewed this friend
-            var query = PFQuery(className: "FriendsInfo")
-            query.fromLocalDatastore()
-            query.whereKey("Name", equalTo: "fInfo")
-            query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
-                if (error == nil && object != nil)
-                {
-                    var check = object[self.data[indexPath.row].username] as?
-                    NSObject
-                    if (check == nil)
-                    {
-                        cell.detailTextLabel?.text = "New"
-                        cell.detailTextLabel?.textColor = UIColor.redColor()
-                    }
-                    else
-                    {
-                        var date = check as! NSDate
-                        if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
-                        {
-                            cell.detailTextLabel?.text = "New"
-                            cell.detailTextLabel?.textColor = UIColor.redColor()
-                        }
-                    }
-                }
-            }
+//            var query = PFQuery(className: "FriendsInfo")
+//            query.fromLocalDatastore()
+//            query.whereKey("Name", equalTo: "fInfo")
+//            query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
+//                if (error == nil && object != nil)
+//                {
+//                    var check = object[self.data[indexPath.row].0.username] as?
+//                    NSObject
+//                    if (check == nil)
+//                    {
+//                        cell.detailTextLabel?.text = "New"
+//                        cell.detailTextLabel?.textColor = UIColor.redColor()
+//                    }
+//                    else
+//                    {
+//                        var date = check as! NSDate
+//                        if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
+//                        {
+//                            cell.detailTextLabel?.text = "New"
+//                            cell.detailTextLabel?.textColor = UIColor.redColor()
+//                        }
+//                    }
+//                }
+//            }
 
             
             return cell
@@ -108,7 +119,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             {
                 var newObject = object
                 println(indexPath.row)
-                newObject[self.data[indexPath.row].username] = NSDate()
+                newObject[self.data[indexPath.row].0.username] = NSDate()
                 newObject.pinInBackgroundWithBlock({ (completion, error) -> Void in
                     if (completion)
                     {
@@ -131,11 +142,11 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         {
             
             var userFriendsID = appManager.user.objectForKey("friendsDataID") as! String
-            var toBeUnfriendedFriendsID = data[indexPath.row].objectForKey("friendsDataID") as! String
-            var toBeUnfriendedID = data[indexPath.row].objectId
+            var toBeUnfriendedFriendsID = data[indexPath.row].0.objectForKey("friendsDataID") as! String
+            var toBeUnfriendedID = data[indexPath.row].0.objectId
             
             self.data.removeAtIndex(indexPath.row)
-            self.images.removeAtIndex(indexPath.row)
+            //self.images.removeAtIndex(indexPath.row)
             updateTimes.removeAtIndex(indexPath.row)
             self.friendsTableView.reloadData()
             
@@ -184,12 +195,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
-        return 1
+        return 2
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String?
     {
-        return ""
+        return sections[section]
     }
     
     func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
@@ -267,7 +278,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             else
             {
                 self.data.removeAll(keepCapacity: false)
-                self.data = d as! [PFUser]
+                self.userArray = d as! [PFUser]
                 self.loadUsersPhotos()
             }
         }
@@ -277,18 +288,23 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     func loadUsersPhotos()
     {
         var unsortedArray = [(UIImage, Int)]()
-        for (var i = 0; i < data.count; i++)
+        for (var i = 0; i < userArray.count; i++)
         {
-            var x = data[i]
+            var x = userArray[i]
             var temp = i
             var pictureFile =  x.objectForKey("profile_picture") as! PFFile
             pictureFile.getDataInBackgroundWithBlock({ (dat, error) -> Void in
                 var image = UIImage(data: dat)
-                unsortedArray.append((image!, temp))
+                self.data.append((x, image!))
                 
-                if (unsortedArray.count == self.data.count)
+                if (temp == self.userArray.count-1)
                 {
-                    self.sortImageArray(unsortedArray)
+                    self.loadUpdateDates()
+                    
+                    //load all the users into the friends section of the tableViewData Dictionary
+                    println("loading friends")
+                    self.tableViewData[1] = self.data
+                    
                 }
             })
         }
@@ -307,20 +323,61 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
         
+        
         loadUpdateDates()
     }
     
     func loadUpdateDates()
     {
+        var updatedUsers = [(PFUser, UIImage)]()
         updateTimes.removeAll(keepCapacity: false)
+        
+        var completionCounter = 0
         for (var i = 0; i < data.count; i++)
         {
             var x = data[i]
-            var date = x.objectForKey("lastPostedTime") as! NSDate
+            var date = x.0.objectForKey("lastPostedTime") as! NSDate
             updateTimes.append(date)
+            
+            var tempIndex = i
+            
+            var query = PFQuery(className: "FriendsInfo")
+            query.fromLocalDatastore()
+            query.whereKey("Name", equalTo: "fInfo")
+            query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
+                if (error == nil && object != nil)
+                {
+                    var check = object[self.data[tempIndex].0.username] as?
+                    NSObject
+                    if (check == nil)
+                    {
+                        updatedUsers.append(self.data[tempIndex])
+                    }
+                    else
+                    {
+                        var date = check as! NSDate
+                        if (date.timeIntervalSinceDate(self.updateTimes[tempIndex]) < 0)
+                        {
+                            updatedUsers.append(self.data[tempIndex])
+                        }
+                    }
+                }
+                completionCounter++
+                println("Completion counter \(completionCounter)")
+                
+                if (completionCounter == self.userArray.count)
+                {
+                    println("loading updates")
+                    self.tableViewData[0] = updatedUsers
+                    self.friendsTableView.reloadData()
+                }
+            }
+
         }
         
-        friendsTableView.reloadData()
+        
+        
+        //friendsTableView.reloadData()
     }
     
     //segue configurations------------------------------------------------------------------------------------
@@ -330,8 +387,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         {
             var dvc = segue.destinationViewController as! FriendsFeedViewController
             
-            println("CHECK \(friendsTableView.indexPathForSelectedRow()!.row) and size of array = \(data.count)")
-            dvc.user = data[friendsTableView.indexPathForSelectedRow()!.row]
+            //println("CHECK \(friendsTableView.indexPathForSelectedRow()!.row) and size of array = \(data.count)")
+            dvc.user = data[friendsTableView.indexPathForSelectedRow()!.row].0
         }
     }
 }
