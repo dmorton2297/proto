@@ -65,7 +65,14 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                 cell.likeButton.setImage(UIImage(named: "likeButtonDisabled"), forState: UIControlState.Normal)
             }
             
-            cell.likeCountLabel.text = "\(data[indexPath.row].likes.count)"
+            if (data[indexPath.row].likes.count != 0)
+            {
+                cell.likeCountLabel.text = "\(data[indexPath.row].likes.count)"
+            }
+            else
+            {
+                cell.likeCountLabel.text = ""
+            }
             
             
             
@@ -177,7 +184,6 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         var completionCounter = 0
         for (var i = 0; i < data.count; i++)
         {
-            println("This ran 1")
             var query = PFQuery(className: "ImagePost")
             var object = data[i] as! String
             var tempIndex = i

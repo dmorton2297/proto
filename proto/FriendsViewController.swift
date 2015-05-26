@@ -12,7 +12,7 @@ import Parse
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
 
-    var images = [UIImage]()
+   // var images = [UIImage]()
     
     @IBOutlet weak var friendsTableView: UITableView!
     var userArray = [PFUser]()
@@ -30,7 +30,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidAppear(animated: Bool)
     {
-        
+        data.removeAll(keepCapacity: false)
         self.loadTableViewData()
     }
     
@@ -43,7 +43,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         //return tableViewData["\(section)"]!.count
         if (tableViewData.isEmpty)
         {
-            return 1
+            return 0
         }
         else
         {
@@ -55,7 +55,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     {
         if (updateTimes.count != data.count){println("Parallel arrays are error")}
         
-        if (!data.isEmpty)
+        if (!tableViewData.isEmpty)
         {
             var dat = tableViewData[indexPath.section]!
             var cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "b")
@@ -71,32 +71,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.backgroundColor = UIColor.clearColor()
             
             cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
-            //check the local data store for the last time this user viewed this friend
-//            var query = PFQuery(className: "FriendsInfo")
-//            query.fromLocalDatastore()
-//            query.whereKey("Name", equalTo: "fInfo")
-//            query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
-//                if (error == nil && object != nil)
-//                {
-//                    var check = object[self.data[indexPath.row].0.username] as?
-//                    NSObject
-//                    if (check == nil)
-//                    {
-//                        cell.detailTextLabel?.text = "New"
-//                        cell.detailTextLabel?.textColor = UIColor.redColor()
-//                    }
-//                    else
-//                    {
-//                        var date = check as! NSDate
-//                        if (date.timeIntervalSinceDate(self.updateTimes[indexPath.row]) < 0)
-//                        {
-//                            cell.detailTextLabel?.text = "New"
-//                            cell.detailTextLabel?.textColor = UIColor.redColor()
-//                        }
-//                    }
-//                }
-//            }
-
             
             return cell
         }
@@ -118,15 +92,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             if (error == nil && object != nil)
             {
                 var newObject = object
-                println(indexPath.row)
                 var username = self.tableViewData[indexPath.section]![indexPath.row].0.username
                 newObject[username] = NSDate()
                 newObject.pinInBackgroundWithBlock({ (completion, error) -> Void in
-                    if (completion)
+                    if (error != nil)
                     {
-                        println("new date recorded.")
+                        println(error)
                     }
-                    
                 })
             }
         }
@@ -168,18 +140,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                         {
                             var a = friendsList.removeAtIndex(i)
                             
-                            println("removeing \(a)")
                             var newObject = object
                             newObject["friends"] = friendsList
-                            for x in friendsList
-                            {
-                                println(x)
-                            }
                             newObject.saveInBackgroundWithBlock { (completion, error) -> Void in
                                 if (error == nil)
                                 {
-                                    println("We are good")
                                     self.finishUnfriendingUser(toBeUnfriendedFriendsID, dataIndex: indexPath.row)
+                                }
+                                else
+                                {
+                                    appManager.displayAlert(self, title: "Error", message: "Could not unfriend user.", completion: nil)
                                 }
                             }
                         }
@@ -216,12 +186,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     func finishUnfriendingUser(userFriendId: String, dataIndex: Int)
     {
         
-        println(userFriendId)
         var query = PFQuery(className: "FriendsObject")
         query.getObjectInBackgroundWithId(userFriendId, block: { (object, error) -> Void in
             if (error == nil && object != nil)
             {
-                println("we are good 2")
                 var friendsList = object.objectForKey("friends") as! [String]
                 for (var i = 0; i < friendsList.count; i++)
                 {
@@ -264,7 +232,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             else
             {
-                println("error in step one")
+                appManager.displayAlert(self, title: "Error", message: "Could not retrieve data.", completion: nil)
             }
         })
     }
@@ -278,7 +246,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         query.findObjectsInBackgroundWithBlock { (d, error) -> Void in
             if (error != nil)
             {
-                println("we have a problem")
+                appManager.displayAlert(self, title: "Error", message: "Could not retrieve data.", completion: nil)
             }
             else
             {
@@ -306,30 +274,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 {
                     self.loadUpdateDates()
                     
-                    //load all the users into the friends section of the tableViewData Dictionary
-                    println("loading friends")
-                    self.tableViewData[1] = self.data
-                    
                 }
             })
         }
-    }
-    
-    func sortImageArray(unsortedArray:[(UIImage, Int)])
-    {
-        for (var i = 0; i < unsortedArray.count; i++)
-        {
-            for x in unsortedArray
-            {
-                if (x.1 == i)
-                {
-                    images.append(x.0)
-                }
-            }
-        }
-        
-        
-        loadUpdateDates()
     }
     
     func loadUpdateDates()
@@ -368,11 +315,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     }
                 }
                 completionCounter++
-                println("Completion counter \(completionCounter)")
                 
                 if (completionCounter == self.userArray.count)
                 {
-                    println("loading updates")
+                    self.tableViewData[1] = self.data
                     self.tableViewData[0] = updatedUsers
                     self.friendsTableView.reloadData()
                 }
@@ -392,7 +338,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         {
             var dvc = segue.destinationViewController as! FriendsFeedViewController
             
-            //println("CHECK \(friendsTableView.indexPathForSelectedRow()!.row) and size of array = \(data.count)")
             var indexPath = friendsTableView.indexPathForSelectedRow()!
             dvc.user = tableViewData[indexPath.section]![indexPath.row].0
         }

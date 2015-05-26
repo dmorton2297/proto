@@ -73,7 +73,7 @@ class AppManager
     //conert a UIImage to a pffile
     func convertUIImageToPFFile(image:UIImage)->PFFile
     {
-        let imageData = UIImageJPEGRepresentation(image, 0.0)
+        let imageData = UIImageJPEGRepresentation(image, 0.4)
         let file = PFFile(data: imageData)
         return file
     }

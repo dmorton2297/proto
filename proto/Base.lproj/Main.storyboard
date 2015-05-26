@@ -296,6 +296,11 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="dK2-3x-fef">
+                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="J1U-qx-5DY">
+                            <connections>
+                                <action selector="logoutButtonPresssed:" destination="DHa-o8-xtu" id="kx0-UD-dfI"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" id="hdo-w6-ckL">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zB2-Hp-FoT">
                                 <rect key="frame" x="538" y="7" width="61" height="30"/>
@@ -450,7 +455,7 @@
                                                                 <constraint firstAttribute="width" constant="25" id="nTu-yR-XhG"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                             <variation key="default">
                                                                 <mask key="constraints">
@@ -550,10 +555,10 @@
                         <viewControllerLayoutGuide type="bottom" id="J11-0y-T5P"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="fWs-4W-VLK">
-                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="hybrid" translatesAutoresizingMaskIntoConstraints="NO" id="Ttt-Ij-mPK">
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                             </mapView>
                         </subviews>
@@ -678,6 +683,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NuP-mY-cvF">
                                         <rect key="frame" x="127" y="60" width="37" height="30"/>
                                         <state key="normal" title="Done">
+                                            <color key="titleColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
@@ -1029,13 +1035,22 @@
                                     <constraint firstAttribute="height" constant="180" id="tIb-PY-ai1"/>
                                 </constraints>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yxO-Us-Z4G">
+                                <rect key="frame" x="16" y="322" width="568" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="6AF-9F-uKL" secondAttribute="centerX" id="FKh-DK-uFS"/>
+                            <constraint firstItem="yxO-Us-Z4G" firstAttribute="top" secondItem="6AF-9F-uKL" secondAttribute="bottom" constant="50" id="VZi-i8-1xB"/>
+                            <constraint firstItem="yxO-Us-Z4G" firstAttribute="trailing" secondItem="L1q-er-O8x" secondAttribute="trailingMargin" id="YYb-VB-dmJ"/>
                             <constraint firstItem="6AF-9F-uKL" firstAttribute="top" secondItem="Uqc-x5-q46" secondAttribute="bottom" constant="28" id="hxD-Q6-gXc"/>
                             <constraint firstAttribute="centerX" secondItem="6AF-9F-uKL" secondAttribute="centerX" id="kOq-O0-Iem"/>
+                            <constraint firstItem="yxO-Us-Z4G" firstAttribute="leading" secondItem="L1q-er-O8x" secondAttribute="leadingMargin" id="wUU-mw-nOA"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="RH4-mL-wL7">
@@ -1054,6 +1069,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="profilePicture" destination="6AF-9F-uKL" id="bHR-i8-e8j"/>
+                        <outlet property="usernameLabel" destination="yxO-Us-Z4G" id="yIF-4e-XyS"/>
                         <segue destination="dgu-vy-fi4" kind="presentation" identifier="editPicture" id="ffb-7Q-oSh"/>
                     </connections>
                 </viewController>
@@ -1133,7 +1149,7 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="vAw-IC-d1c"/>
-        <segue reference="TTT-jR-mxX"/>
+        <segue reference="hgZ-g2-luh"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
 </document>

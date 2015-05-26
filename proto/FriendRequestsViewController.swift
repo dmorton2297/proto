@@ -25,6 +25,10 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         super.viewDidLoad()
         
         //menu configuration
+       // loadData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         loadData()
     }
     
@@ -104,7 +108,7 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
             }
             else
             {
-                println("error in step one")
+                appManager.displayAlert(self, title: "Error.", message: "Could not load data.", completion: nil)
             }
         })
     }
@@ -118,7 +122,7 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         query.findObjectsInBackgroundWithBlock { (d, error) -> Void in
             if (error != nil)
             {
-                println("we have a problem")
+                appManager.displayAlert(self, title: "Error", message: "Could not retrieve requests.", completion: nil)
             }
             else
             {
@@ -137,7 +141,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         
         var query = PFQuery(className: "FriendsObject")
         query.getObjectInBackgroundWithId(fDIDOne, block: { (dat, error) -> Void in
-            println("we are here")
             if (error != nil)
             {
                 appManager.displayAlert(self, title: "Error", message: "Could not complete request.", completion: nil)
@@ -147,13 +150,11 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
                 var requests = dat.objectForKey("requested") as! [String]
                 
                 //remove the request from the use
-                println("length \(requests.count)")
                 for (var i = 0; i < requests.count; i++)
                 {
                     var looking = requests[i]
                     if (looking == appManager.user.objectId)
                     {
-                        println("Removing \(requests[i])")
                         requests.removeAtIndex(i)
                     }
                 }
@@ -236,7 +237,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
         
         var query = PFQuery(className: "FriendsObject")
         query.getObjectInBackgroundWithId(fDIDOne, block: { (dat, error) -> Void in
-            println("we are here")
             if (error != nil)
             {
                 appManager.displayAlert(self, title: "Error", message: "Could not complete request.", completion: nil)
@@ -249,7 +249,6 @@ class FriendRequestsViewController: UIViewController, UITableViewDelegate, UITab
                     var looking = requests[i]
                     if (looking == appManager.user.objectId)
                     {
-                        println("Removing \(requests[i])")
                         requests.removeAtIndex(i)
                     }
                 }

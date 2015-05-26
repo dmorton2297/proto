@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
             if (error == nil && object != nil)
             {
-                println("Data store exists")
+                println("Data store exists.")
             }
             else
             {

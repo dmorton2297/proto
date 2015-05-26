@@ -63,6 +63,7 @@ class ViewController: UIViewController, UITextFieldDelegate
     //if there is a current user, sign in
     override func viewDidAppear(animated: Bool)
     {
+        currentUser = PFUser.currentUser()
         if (currentUser != nil)
         {
             appManager.user = currentUser

@@ -11,6 +11,7 @@ import Parse
 
 class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
+    @IBOutlet weak var usernameLabel: UILabel!
     
     @IBOutlet var profilePicture: UIImageView! //Profile picture connection from UIStoryBoard
     var chosenProfileImage : UIImage! //This will be used when setting a new profile picture
@@ -34,6 +35,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         
         loadProfilePicture()
+        
+        usernameLabel.text = appManager.user.username
         
     }
     

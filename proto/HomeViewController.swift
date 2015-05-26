@@ -82,6 +82,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         loadProfilePicture()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        loadProfilePicture()
+    }
     
     
     
@@ -145,7 +148,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var completionCounter = 0
         for (var i = 0; i < data.count; i++)
         {
-            println("This ran 1")
             var query = PFQuery(className: "ImagePost")
             var object = data[i] as! String
             var tempIndex = i
@@ -178,14 +180,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                             }
                             else
                             {
-                                println(error)
+                                appManager.displayAlert(self, title: "Error", message: "Error retrieving image data.", completion: nil)
                             }
                         })
                     }
                 }
                 else
                 {
-                    println(error)
+                    appManager.displayAlert(self, title: "Error", message: "Error retrieving image data.", completion: nil)
                 }
             })
         }
@@ -227,8 +229,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         {
             for y in dat
             {
-                println("Woots")
-                println("\(y.1) \(i)")
                 if (y.1 == i)
                 {
                     data.append(y.0)
@@ -298,7 +298,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.locationTextLabel.text = data[indexPath.row].caption
         
         
-        cell.coordinatesTextLabel.text = "\(data[indexPath.row].locality) \(toStringOfAbbrevMonthDayAndTime(data[indexPath.row].date))"
+        cell.coordinatesTextLabel.text = "\(data[indexPath.row].locality)"
         
         //setting the image thumbnail in the cell
         cell.selfieImageView.clipsToBounds = true
@@ -370,7 +370,6 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             {
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
-                println(location.coordinate.latitude as Double)
                 var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate(), liked: false, likes: [String]())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
@@ -385,6 +384,24 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     //IBAction connections from storyboard-------------------------------------------------------------------------
     
+    //this method will log out the current user
+    @IBAction func logoutButtonPresssed(sender: UIBarButtonItem)
+    {
+        let alert = UIAlertController(title: "", message: "Do you want to logout?", preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
+        let yesAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default) { (action) -> Void in
+            PFUser.logOut()
+            appManager.user = nil
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
+        let noAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
     
     //this method will allow a user to take a photo, or pick on from the library for a post.
     @IBAction func checkInButtonPressed(sender: AnyObject)
