@@ -38,7 +38,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //appManager.dataStoreExists()
         
         var navigationBarAppearance = UINavigationBar.appearance()
-        navigationBarAppearance.barTintColor = UIColor.lightGrayColor()
+        var custom = UIColor(red: CGFloat(0.18), green: CGFloat(0.49), blue: CGFloat(1.0), alpha: CGFloat(1.0))
+        navigationBarAppearance.barTintColor = custom
         
         
         //Parse configurations

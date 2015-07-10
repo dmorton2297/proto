@@ -27,6 +27,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     var data = [PictureEntry]()//the data for the postsTableView
     var alreadyOpened = false //this is used to determeine weather the view should be loaded or not. See viewDidAppear
     
+    var selectedUser : PFUser! //placeholder variable for when the user selects a friends from the likes list. Used in likeButtonPressed and prepare for segue.
+    
+    var savingPost = false
+    
+    
     
     //----ViewController Configurations------------------------------------------------------------------------
     //setup for this view controller
@@ -83,7 +88,12 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(animated: Bool) {
+        if (!savingPost)
+        {
+            loadUserData()
+        }
         loadProfilePicture()
+        
     }
     
     
@@ -130,7 +140,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             if (error != nil)
             {
                 appManager.displayAlert(self, title: "Error", message: "Could not save post. ", completion: nil)
+                self.savingPost = false
                 
+            }
+            else
+            {
+                appManager.displayAlert(self, title: "Success", message: "Your post was successfully uploaded", completion: nil)
+                self.savingPost = false
+                self.viewDidAppear(true)
             }
         }
     }
@@ -225,16 +242,22 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func sortInfoIntoTableView(dat:[(PictureEntry, Int)])
     {
+        var temp = [PictureEntry]()
         for (var i = 0; i < dat.count; i++)
         {
             for y in dat
             {
                 if (y.1 == i)
                 {
-                    data.append(y.0)
+                    
+                    temp.append(y.0)
                 }
             }
         }
+        
+        data.removeAll(keepCapacity: false)
+        data = temp
+        postsTableView.reloadData()
         
         postsTableView.reloadData()
         activityIndicator.stopAnimating()
@@ -306,6 +329,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         cell.selfieImageView.layer.cornerRadius = 5
         
         
+        cell.likeButton.tag = indexPath.row
+        cell.likeCountLabel.text = "\(data[indexPath.row].likes.count)"
+        
         cell.frame = CGRectMake(cell.frame.origin.x, cell.frame.origin.y, postsTableView.frame.width, 100)
         
         
@@ -373,6 +399,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                 var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate(), liked: false, likes: [String]())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
+                self.savingPost = true
                 self.savePost(entry)
             }
             self.dismissViewControllerAnimated(true, completion: nil)
@@ -407,7 +434,16 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBAction func checkInButtonPressed(sender: AnyObject)
     {
         //create an action sheet that allows a user to pick between library and camera
-        var alert = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        var alert : UIAlertController!
+        
+        if(UIDevice.currentDevice().model.lowercaseString.rangeOfString("ipad") != nil)
+        {
+            alert = UIAlertController(title: "Select an input source.", message: nil, preferredStyle: UIAlertControllerStyle.Alert)
+        }
+        else
+        {
+            alert = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        }
         var cameraAction = UIAlertAction(title: "Camera", style: UIAlertActionStyle.Default){(alertAction) -> Void in
             self.picker.sourceType = UIImagePickerControllerSourceType.Camera
             self.presentViewController(self.picker, animated: true, completion: nil)
@@ -425,13 +461,63 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         self.presentViewController(alert, animated: true, completion: nil)
     }
     
+    @IBAction func likeButtonPressed(sender: UIButton)
+    {
+        var index = sender.tag
+        var alert = UIAlertController(title: "Loading...", message: nil, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        var likes = data[index].likes
+        var tempCounter = 0
+        
+        var cancelAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel, handler: nil)
+        alert.addAction(cancelAction)
+        
+        for x in likes
+        {
+            let query = PFUser.query()
+            query.getObjectInBackgroundWithId(x, block: { (object, error) -> Void in
+                if (error == nil)
+                {
+                    var selUser = object as! PFUser
+                    
+                    var action = UIAlertAction(title: selUser.username, style: UIAlertActionStyle.Default, handler: { (alertAction) -> Void in
+                        self.selectedUser = selUser
+                        self.performSegueWithIdentifier("showFriendsFeed2", sender: self)
+                        
+                    })
+                    alert.addAction(action)
+                    tempCounter++
+                    
+                    if (tempCounter == likes.count)
+                    {
+                        alert.title = "Likes"
+                    }
+                    
+                }
+            })
+        }
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+        
+        
+        
+    }
+    
+    
     //menu setup---------------------------------------------------------------------------------------------
     //segue configuration
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        var dvc = segue.destinationViewController as! PostDetailViewController
-        dvc.location = data[postsTableView.indexPathForSelectedRow()!.row].location
-        
-        postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
+        if (segue.identifier == "showFriendsFeed2")
+        {
+            var dvc = segue.destinationViewController as! FriendsFeedViewController
+            dvc.user = selectedUser
+        }
+        else
+        {
+            var dvc = segue.destinationViewController as! PostDetailViewController
+            dvc.location = data[postsTableView.indexPathForSelectedRow()!.row].location
+            
+            postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
+        }
         
     }
     
