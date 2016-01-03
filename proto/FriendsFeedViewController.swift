@@ -215,10 +215,10 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                         geocoder.reverseGeocodeLocation(coordinates, completionHandler: { (results, error) -> Void in
                             if (error == nil && results != nil)
                             {
-                                if (results.count >= 0)
+                                if (results!.count >= 0)
                                 {
-                                    let placemark = results[0] as! CLPlacemark
-                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date, liked: liked, likes: likes)
+                                    let placemark = results![0] as! CLPlacemark
+                                    let entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality!, date:date, liked: liked, likes: likes)
                                     unsortedArray.append((entry, tempIndex))
                                     completionCounter++
                                     if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}
@@ -226,14 +226,14 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
                             }
                             else
                             {
-                                println(error)
+                                print(error)
                             }
                         })
                     }
                 }
                 else
                 {
-                    println(error)
+                    print(error)
                 }
             })
         }
@@ -244,7 +244,7 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
         var a = ""
         var b = ""
         var toggle = true
-        for x in str
+        for x in str.characters
         {
             if (x != "\"")
             {
@@ -303,9 +303,9 @@ class FriendsFeedViewController: UIViewController, UITableViewDataSource, UITabl
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var dvc = segue.destinationViewController as! PostDetailViewController
-        dvc.location = data[entryTableView.indexPathForSelectedRow()!.row].location
+        dvc.location = data[entryTableView.indexPathForSelectedRow!.row].location
         
-        entryTableView.deselectRowAtIndexPath(entryTableView.indexPathForSelectedRow()!, animated: true)
+        entryTableView.deselectRowAtIndexPath(entryTableView.indexPathForSelectedRow!, animated: true)
         
     }
     

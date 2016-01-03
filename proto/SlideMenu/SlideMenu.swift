@@ -23,7 +23,7 @@ class SlideMenu: UIView, UITableViewDelegate, UITableViewDataSource{
     
     required init(coder aDecoder: NSCoder)
     {
-        super.init(coder: aDecoder)
+        super.init(coder: aDecoder)!
         
         NSBundle.mainBundle().loadNibNamed("SlideMenu", owner: self, options: nil)
         

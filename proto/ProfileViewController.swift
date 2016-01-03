@@ -57,7 +57,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!)
     {
-        println("this ran")
+        print("this ran")
         imagePicker.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.chosenProfileImage = image
             self.performSegueWithIdentifier("editPicture", sender: self)

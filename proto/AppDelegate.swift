@@ -53,7 +53,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         query.getFirstObjectInBackgroundWithBlock { (object, error) -> Void in
             if (error == nil && object != nil)
             {
-                println("Data store exists.")
+                print("Data store exists.")
             }
             else
             {
@@ -81,16 +81,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         if application.respondsToSelector("registerUserNotificationSettings:")
         {
-            let userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
-            let settings = UIUserNotificationSettings(forTypes: userNotificationTypes, categories: nil)
+            let settings = UIUserNotificationSettings(forTypes: [.Alert, .Badge, .Sound], categories: nil)
             application.registerUserNotificationSettings(settings)
             application.registerForRemoteNotifications()
         }
         else
         {
             // let types = UIRemoteNotificationType.Badge | UIRemoteNotificationType.Alert | UIRemoteNotificationType.Sound
-            let types = UIUserNotificationType.Badge | UIUserNotificationType.Sound | UIUserNotificationType.Alert
-            let settings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            let settings = UIUserNotificationSettings(forTypes: [.Badge, .Sound, .Alert], categories: nil)
             application.registerUserNotificationSettings(settings)
         }
         return true
@@ -100,7 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     {
         let installation = PFInstallation.currentInstallation()
         installation.setDeviceTokenFromData(deviceToken)
-        println(deviceToken)
+        print(deviceToken)
         if (installation != nil && appManager.user != nil)
         {
             installation.addUniqueObject("channel\(appManager.user.objectId)", forKey: "channels")
@@ -108,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             installation.saveInBackgroundWithBlock { (completion, error) -> Void in
                 if (!completion)
                 {
-                    println("Could not finish configuring push notificatoins")
+                    print("Could not finish configuring push notificatoins")
                 }
                 else
                 {
@@ -120,9 +118,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
         if error.code == 3010 {
-            println("Push notifications are not supported in the iOS Simulator.")
+            print("Push notifications are not supported in the iOS Simulator.")
         } else {
-            println("application:didFailToRegisterForRemoteNotificationsWithError: %@", error)
+            print("application:didFailToRegisterForRemoteNotificationsWithError: %@", error)
         }
     }
     
@@ -172,19 +170,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("proto.sqlite")
         var error: NSError? = nil
         var failureReason = "There was an error creating or loading the application's saved data."
-        if coordinator!.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil, error: &error) == nil {
-            coordinator = nil
-            // Report any error we got.
-            let dict = NSMutableDictionary()
-            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
-            dict[NSLocalizedFailureReasonErrorKey] = failureReason
-            dict[NSUnderlyingErrorKey] = error
-            error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict as [NSObject : AnyObject])
-            // Replace this with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog("Unresolved error \(error), \(error!.userInfo)")
-            abort()
-        }
         
         return coordinator
         }()
@@ -203,14 +188,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Core Data Saving support
     
     func saveContext () {
-        if let moc = self.managedObjectContext {
-            var error: NSError? = nil
-            if moc.hasChanges && !moc.save(&error) {
-                // Replace this implementation with code to handle the error appropriately.
-                // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                NSLog("Unresolved error \(error), \(error!.userInfo)")
-                abort()
-            }
+        do {
+            try self.managedObjectContext!.save()
+        } catch {
+            fatalError("Failure to save context: \(error)")
         }
     }
     

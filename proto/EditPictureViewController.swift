@@ -20,7 +20,6 @@ class EditPictureViewController: UIViewController {
     
     
     
-    
     //setup that will occur when the view loads
     override func viewDidLoad()
     {
@@ -44,7 +43,7 @@ class EditPictureViewController: UIViewController {
     //action that will run when the user presses the "done" button
     @IBAction func done(sender: AnyObject)
     {
-        println("This ran")
+        print("This ran")
         saveImage()
     }
     
@@ -77,7 +76,7 @@ class EditPictureViewController: UIViewController {
     {
         
         UIGraphicsBeginImageContextWithOptions(self.view.frame.size, false, UIScreen.mainScreen().scale) //scale it correctly for the retina display
-        view.layer.renderInContext(UIGraphicsGetCurrentContext())
+        view.layer.renderInContext(UIGraphicsGetCurrentContext()!)
         let simage = UIGraphicsGetImageFromCurrentImageContext()
         
         UIGraphicsEndImageContext()
@@ -86,9 +85,9 @@ class EditPictureViewController: UIViewController {
         var squareLength = croppingView.frame.width
         var clippedRect = CGRectMake(croppingView.frame.origin.x*scale, croppingView.frame.origin.y*scale, squareLength*scale, squareLength*scale)
         var imageRef = CGImageCreateWithImageInRect(simage.CGImage, clippedRect)
-        var img = UIImage(CGImage: imageRef)
+        var img = UIImage(CGImage: imageRef!)
         
-        var a = appManager.convertUIImageToPFFile(img!)
+        var a = appManager.convertUIImageToPFFile(img)
         
         appManager.user["profile_picture"] = a
         appManager.user.saveInBackgroundWithBlock { (completion, error) -> Void in

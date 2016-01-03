@@ -27,7 +27,7 @@ class AddFriendsViewController: UIViewController, UITextFieldDelegate, UITableVi
     func textFieldShouldReturn(textField: UITextField) -> Bool
     {
         textField.resignFirstResponder()
-        data = queryForUsers(textField.text)
+        data = queryForUsers(textField.text!)
         resultsTableView.reloadData()
         activityIndicator.stopAnimating()
         activityIndicator.hidden = true
@@ -72,9 +72,9 @@ class AddFriendsViewController: UIViewController, UITextFieldDelegate, UITableVi
         var friendsInfoForCurrentUser = appManager.getParseObject("FriendsObject", objectID: appManager.user.objectForKey("friendsDataID") as! String)
         var friendsInfoForRequested = appManager.getParseObject("FriendsObject", objectID: data[indexPath.row].objectForKey("friendsDataID") as! String)
         
-        println(friendsInfoForCurrentUser.objectId)
+        print(friendsInfoForCurrentUser.objectId)
         
-        println(friendsInfoForRequested.objectId)
+        print(friendsInfoForRequested.objectId)
         
         var friendsArray = friendsInfoForCurrentUser.objectForKey("requested") as! [String]
         var requestsArray = friendsInfoForRequested.objectForKey("friend_requests") as! [String]
@@ -117,7 +117,7 @@ class AddFriendsViewController: UIViewController, UITextFieldDelegate, UITableVi
                 })
                 
                 //push a notification to tell the requested that they have just been requested
-                println("we made it here")
+                print("we made it here")
                 var query = PFInstallation.query()
                 query.whereKey("channels", containedIn: ["channel\(user.objectId)"])
                 query.whereKey("deviceType", containedIn: ["ios"])

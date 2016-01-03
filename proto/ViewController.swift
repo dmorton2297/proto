@@ -98,12 +98,12 @@ class ViewController: UIViewController, UITextFieldDelegate
                 (user: PFUser!, error: NSError!) -> Void in
                 if user == nil
                 {
-                    println(error.description)
+                    print(error.description)
                     appManager.displayAlert(self, title: "Error", message: "Invalid Login Information", completion: nil)
                 }
                 else
                 {
-                    println(PFUser.currentUser().username)
+                    print(PFUser.currentUser().username)
                     appManager.user = user
                     self.performSegueWithIdentifier("login2", sender: self)
                 }

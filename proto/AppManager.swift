@@ -54,7 +54,7 @@ class AppManager
         if (user != nil)
         {
             var dataID = user.objectForKey("dataID") as! NSString
-            println(dataID)
+            print(dataID)
             dat = query.getObjectWithId(dataID as String)
             return dat
             
@@ -66,7 +66,7 @@ class AppManager
     func getParseObject(className:String, objectID:String) ->PFObject
     {
         var query = PFQuery(className: className)
-        println(objectID)
+        print(objectID)
         return query.getObjectWithId(objectID);
     }
     
@@ -106,7 +106,7 @@ class AppManager
             if (error == nil)
             {
 
-                println("data store created successfully.")
+                print("data store created successfully.")
             }
         }
     }

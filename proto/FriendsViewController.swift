@@ -53,7 +53,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        if (updateTimes.count != data.count){println("Parallel arrays are error")}
+        if (updateTimes.count != data.count){print("Parallel arrays are error")}
         
         if (!tableViewData.isEmpty)
         {
@@ -97,7 +97,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 newObject.pinInBackgroundWithBlock({ (completion, error) -> Void in
                     if (error != nil)
                     {
-                        println(error)
+                        print(error)
                     }
                 })
             }
@@ -336,10 +336,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     {
         if (segue.identifier == "showFriendsFeed")
         {
-            var dvc = segue.destinationViewController as! FriendsFeedViewController
+            let dvc = segue.destinationViewController as! FriendsFeedViewController
             
-            var indexPath = friendsTableView.indexPathForSelectedRow()!
-            dvc.user = tableViewData[indexPath.section]![indexPath.row].0
+            let indexPath = friendsTableView.indexPathForSelectedRow
+            dvc.user = tableViewData[indexPath!.section]![indexPath!.row].0
         }
     }
 }

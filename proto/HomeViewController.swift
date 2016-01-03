@@ -39,6 +39,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     {
         super.viewDidLoad()
         
+        print("This is running 11")
         var navController = self.parentViewController as! UINavigationController
         
         
@@ -183,13 +184,17 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
                     var coordinates = self.getLocationFromString(coordinatesString)
                     
                     imageFile.getDataInBackgroundWithBlock { (picture, error) -> Void in
+                        if error != nil{
+                            print(error)
+                            return
+                        }
                         geocoder.reverseGeocodeLocation(coordinates, completionHandler: { (results, error) -> Void in
                             if (error == nil && results != nil)
                             {
-                                if (results.count >= 0)
+                                if (results!.count >= 0)
                                 {
-                                    let placemark = results[0] as! CLPlacemark
-                                    var entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality, date:date, liked: false, likes: likes)
+                                    let placemark = results![0]
+                                    let entry = PictureEntry(image: UIImage(data: picture)!, caption: caption, location: coordinates, pointWorth: pointWorth, locality: placemark.locality!, date:date, liked: false, likes: likes)
                                     unsortedArray.append((entry, tempIndex))
                                     completionCounter++
                                     if (completionCounter == data.count){self.sortInfoIntoTableView(unsortedArray)}
@@ -215,7 +220,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         var a = ""
         var b = ""
         var toggle = true
-        for x in str
+        for x in str.characters
         {
             if (x != "\"")
             {
@@ -385,8 +390,8 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         var action = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-            let field = alert.textFields?[0]as! UITextField
-            let info = field.text
+            let field = alert.textFields?[0]
+            let info = field!.text
             //check if user added nothing
             if (info == "" || info == nil)
             {
@@ -396,7 +401,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
             {
                 appManager.locationManager.stopUpdatingLocation()
                 var location = appManager.locationManager.location
-                var entry = PictureEntry(image: image, caption: info, location: location, pointWorth: 10, locality: "temp", date:NSDate(), liked: false, likes: [String]())
+                var entry = PictureEntry(image: image, caption: info!, location: location!, pointWorth: 10, locality: "temp", date:NSDate(), liked: false, likes: [String]())
                 self.data.insert(entry, atIndex: 0)
                 self.postsTableView.reloadData()
                 self.savingPost = true
@@ -514,9 +519,9 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         else
         {
             var dvc = segue.destinationViewController as! PostDetailViewController
-            dvc.location = data[postsTableView.indexPathForSelectedRow()!.row].location
+            dvc.location = data[postsTableView.indexPathForSelectedRow!.row].location
             
-            postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow()!, animated: true)
+            postsTableView.deselectRowAtIndexPath(postsTableView.indexPathForSelectedRow!, animated: true)
         }
         
     }

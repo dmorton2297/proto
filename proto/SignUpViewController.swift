@@ -80,6 +80,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     //This method will sign up user with parse.
     @IBAction func signUpButtonPressed(sender: AnyObject)
     {
+        print("Check one")
         //conditional checks to make sure all info is present
         let checkOne:Bool = emailTextField.text == nil || emailTextField.text == ""
         let checkTwo:Bool = usernameTextField.text == nil || usernameTextField.text == ""
@@ -153,6 +154,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
                             if user != nil
                             {
                                 appManager.user = user
+                                print("This is running")
                                 self.performSegueWithIdentifier("login", sender: self)
                             }
                             else
